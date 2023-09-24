@@ -75,6 +75,11 @@ extension UIView {
     }
     
     @discardableResult
+    public func offset(x: CGFloat, y: CGFloat) -> UIView {
+        return padding(left: x, right: -x, top: y, bottom: -y)
+    }
+    
+    @discardableResult
     public func aspectRatio(_ aspectRatio: CGFloat) -> Self {
         widthAnchor == heightAnchor * aspectRatio
         return self
