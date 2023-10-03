@@ -24,13 +24,4 @@ extension UITableView {
     public func diffableDataSource<S: Hashable, I: Hashable>(cellProvider: @escaping (UITableView, IndexPath, I) -> UITableViewCell?) ->  UITableViewDiffableDataSource<S,I> {
         return UITableViewDiffableDataSource<S,I>(tableView: self, cellProvider: cellProvider)
     }
-    
-    public func registerCell<Cell>(_ type: Cell.Type) where Cell: UITableViewCell, Cell: ReuseIdentifiable {
-        register(Cell.self, forCellReuseIdentifier: Cell.reuseId)
-    }
-    
-    public func registerCellWithNib<Cell>(_ type: Cell.Type) where Cell: UITableViewCell, Cell: ReuseIdentifiable {
-        let nib = UINib(nibName: Cell.reuseId, bundle: nil)
-        register(nib, forCellReuseIdentifier: Cell.reuseId)
-    }
 }

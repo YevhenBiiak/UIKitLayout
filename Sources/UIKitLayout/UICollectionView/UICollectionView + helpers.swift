@@ -24,13 +24,4 @@ extension UICollectionView {
     public func diffableDataSource<S: Hashable, I: Hashable>(cellProvider: @escaping (UICollectionView, IndexPath, I) -> UICollectionViewCell?) -> UICollectionViewDiffableDataSource<S,I> {
         return UICollectionViewDiffableDataSource<S,I>(collectionView: self, cellProvider: cellProvider)
     }
-    
-    public func registerCell<Cell>(_ type: Cell.Type) where Cell: UICollectionViewCell, Cell: ReuseIdentifiable {
-        register(Cell.self, forCellWithReuseIdentifier: Cell.reuseId)
-    }
-    
-    public func registerCellWithNib<Cell>(_ type: Cell.Type) where Cell: UICollectionViewCell, Cell: ReuseIdentifiable {
-        let nib = UINib(nibName: Cell.reuseId, bundle: nil)
-        register(nib, forCellWithReuseIdentifier: Cell.reuseId)
-    }
 }

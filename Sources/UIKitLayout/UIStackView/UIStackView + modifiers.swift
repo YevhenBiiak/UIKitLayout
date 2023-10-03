@@ -9,6 +9,12 @@ import UIKit
 extension UIStackView {
     
     @discardableResult
+    public func axis(_ axis: NSLayoutConstraint.Axis) -> Self {
+        self.axis = axis
+        return self
+    }
+    
+    @discardableResult
     public func alignment(_ alignment: UIStackView.Alignment) -> Self {
         self.alignment = alignment
         return self

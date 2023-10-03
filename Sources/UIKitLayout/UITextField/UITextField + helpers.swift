@@ -6,7 +6,6 @@
 
 import UIKit
 import Combine
-import AnchorLayout
 
 extension UITextField {
     
@@ -35,44 +34,6 @@ extension UITextField {
     
     public func onEvent(_ event: UIControl.Event, _ action: @escaping (inout String?) -> Void) {
         addAction(UIAction { _ in action(&self.text) }, for: event)
-    }
-    
-    public func assignText(to publisher: inout Published<String>.Publisher) {
-        editingEventsPublisher.assign(to: &publisher)
-    }
-    
-    @discardableResult
-    public func validator(_ validator: TextFieldValidator) -> TextFieldValidator {
-        func addErrorLabel() {
-            errorLabel = UILabel()
-            errorLabel!.font = .systemFont(ofSize: 12)
-            errorLabel!.textColor = .systemRed
-            
-            addSubview(errorLabel!, tamic: false)
-            errorLabel!.topAnchor == bottomAnchor
-            errorLabel!.leadingAnchor == leadingAnchor
-            errorLabel!.trailingAnchor == trailingAnchor
-        }
-        
-        addErrorLabel()
-        self.validator = validator
-        self.keyboardType = validator.keyboardType
-        self.errorLabel?.text = validator.error
-        
-        self.validator?.setup { [weak self] validator in
-            validator.validate(self?.text)
-        } onSuccess: { [weak self] in
-            self?.errorLabel?.isHidden = true
-        } onFailure: { [weak self] in
-            self?.errorLabel?.isHidden = false
-        }
-        
-        return validator
-    }
-    
-    public func placeholderColor(_ color: UIColor) {
-        attributedPlaceholder = .init(string: placeholder ?? "",
-                                      attributes: [.foregroundColor: color])
     }
 }
 

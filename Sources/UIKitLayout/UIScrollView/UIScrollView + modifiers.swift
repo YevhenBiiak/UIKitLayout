@@ -34,6 +34,7 @@ extension UIScrollView {
         return self
     }
     
+    @discardableResult
     public func scrollIndicators(_ visibility: UIVisibility, axes: [NSLayoutConstraint.Axis] = [.vertical, .horizontal]) -> Self {
         for axis in axes {
             switch axis {
@@ -52,7 +53,20 @@ extension UIScrollView {
         return self
     }
     
+    @discardableResult
     public func scrollIndicators(_ visibility: UIVisibility, axis: NSLayoutConstraint.Axis) -> Self {
-        return scrollIndicators(visibility, axes: [axis])
+        scrollIndicators(visibility, axes: [axis])
+    }
+    
+    @discardableResult
+    public func pagingEnabled(_ enabled: Bool) -> Self {
+        isPagingEnabled = enabled
+        return self
+    }
+    
+    @discardableResult
+    public func keyboardDismissMode(_ mode: KeyboardDismissMode) -> Self {
+        keyboardDismissMode = mode
+        return self
     }
 }

@@ -6,15 +6,4 @@
 
 import UIKit
 
-extension UILabel {
-    
-    public func adjustFontSize(minScale: CGFloat) {
-        adjustsFontSizeToFitWidth = true
-        minimumScaleFactor = minScale
-    }
-    
-    public func textShadow(_ color: UIColor, offset: CGSize) {
-        shadowColor = color
-        shadowOffset = offset
-    }
-}
+extension UILabel {}
