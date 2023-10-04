@@ -234,9 +234,8 @@ extension UIView {
     @discardableResult
     public func blur(_ style: UIBlurEffect.Style = .systemMaterial, intensity: CGFloat = 1.0) -> Self {
         let blurredView = VisualEffectView(style: style, intensity: intensity)
-        blurredView.frame = bounds
-        blurredView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        self.insertSubview(blurredView, at: 0)
+        insertSubview(blurredView, at: 0, tamic: false)
+        blurredView.edgeAnchors == edgeAnchors
         return self
     }
     

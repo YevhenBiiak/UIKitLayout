@@ -9,6 +9,23 @@ import AnchorLayout
 
 extension UIView {
     
+    public var isRootView: Bool {
+        rootView === self
+    }
+    
+    public var rootView: UIView? {
+        controller?.view
+    }
+    
+    public var controller: UIViewController? {
+        for responder in sequence(first: self, next: { $0.next }) {
+            if let viewController = responder as? UIViewController {
+                return viewController
+            }
+        }
+        return nil
+    }
+    
     public func removeAllSubviews() {
         subviews.forEach { $0.removeFromSuperview() }
     }
