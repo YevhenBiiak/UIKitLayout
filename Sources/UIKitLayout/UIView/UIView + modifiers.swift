@@ -115,7 +115,7 @@ extension UIView {
     @discardableResult
     public func onTapGesture(_ perform: @escaping () -> Void) -> Self {
         isUserInteractionEnabled = true
-        tapGestureAction = perform
+        tapGestureActions.append(perform)
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapGestureRecieved)))
         return self
     }
@@ -123,7 +123,7 @@ extension UIView {
     @discardableResult
     public func onLongPress(_ perform: @escaping () -> Void) -> Self {
         isUserInteractionEnabled = true
-        longPressAction = perform
+        longPressActions.append(perform)
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(lognPressRecieved)))
         return self
     }
@@ -131,7 +131,7 @@ extension UIView {
     @discardableResult
     public func onTapGesture(_ perform: @escaping (_ view: UIView) -> Void) -> Self {
         isUserInteractionEnabled = true
-        tapGestureHandler = perform
+        tapGestureHandlers.append(perform)
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapGestureRecieved)))
         return self
     }
@@ -139,7 +139,7 @@ extension UIView {
     @discardableResult
     public func onLongPress(_ perform: @escaping (_ view: UIView) -> Void) -> Self {
         isUserInteractionEnabled = true
-        longPressHandler = perform
+        longPressHandlers.append(perform)
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(lognPressRecieved)))
         return self
     }
@@ -153,14 +153,14 @@ extension UIView {
     }
     
     @objc internal func tapGestureRecieved() {
-        tapGestureAction?()
-        tapGestureHandler?(self)
+        tapGestureActions.forEach { $0() }
+        tapGestureHandlers.forEach { $0(self) }
     }
     
     @objc internal func lognPressRecieved(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began else { return }
-        longPressAction?()
-        longPressHandler?(self)
+        longPressActions.forEach { $0() }
+        longPressHandlers.forEach { $0(self) }
     }
     
     @objc internal func dismissKeyboard() {

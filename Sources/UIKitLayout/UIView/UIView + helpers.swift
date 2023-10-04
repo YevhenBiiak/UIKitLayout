@@ -92,21 +92,6 @@ extension UIView {
             trailingAnchor <= superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
             centerXAnchor  == superview.centerXAnchor
-        case .inSafeArea:
-            topAnchor      == superview.safeAreaLayoutGuide.topAnchor
-            leadingAnchor  == superview.safeAreaLayoutGuide.leadingAnchor
-            trailingAnchor == superview.safeAreaLayoutGuide.trailingAnchor
-            bottomAnchor   == superview.safeAreaLayoutGuide.bottomAnchor
-        case .inSafeAreaIgnoringTop:
-            topAnchor      == superview.topAnchor
-            leadingAnchor  == superview.safeAreaLayoutGuide.leadingAnchor
-            trailingAnchor == superview.safeAreaLayoutGuide.trailingAnchor
-            bottomAnchor   == superview.safeAreaLayoutGuide.bottomAnchor
-        case .inSafeAreaIgnoringBottom:
-            topAnchor      == superview.safeAreaLayoutGuide.topAnchor
-            leadingAnchor  == superview.safeAreaLayoutGuide.leadingAnchor
-            trailingAnchor == superview.safeAreaLayoutGuide.trailingAnchor
-            bottomAnchor   == superview.bottomAnchor
         case .center:
             topAnchor      >= superview.topAnchor
             leadingAnchor  >= superview.leadingAnchor
@@ -157,6 +142,43 @@ extension UIView {
             leadingAnchor  >= superview.leadingAnchor
             trailingAnchor == superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
+        case .inSafeArea:
+            topAnchor      == superview.safeAreaLayoutGuide.topAnchor
+            leadingAnchor  == superview.safeAreaLayoutGuide.leadingAnchor
+            trailingAnchor == superview.safeAreaLayoutGuide.trailingAnchor
+            bottomAnchor   == superview.safeAreaLayoutGuide.bottomAnchor
+        case .inSafeAreaIgnoringTop:
+            topAnchor      == superview.topAnchor
+            leadingAnchor  == superview.safeAreaLayoutGuide.leadingAnchor
+            trailingAnchor == superview.safeAreaLayoutGuide.trailingAnchor
+            bottomAnchor   == superview.safeAreaLayoutGuide.bottomAnchor
+        case .inSafeAreaIgnoringBottom:
+            topAnchor      == superview.safeAreaLayoutGuide.topAnchor
+            leadingAnchor  == superview.safeAreaLayoutGuide.leadingAnchor
+            trailingAnchor == superview.safeAreaLayoutGuide.trailingAnchor
+            bottomAnchor   == superview.bottomAnchor
+        case .aboveSafeArea:
+            topAnchor      == superview.topAnchor
+            leadingAnchor  == superview.leadingAnchor
+            trailingAnchor == superview.trailingAnchor
+            bottomAnchor   == superview.safeAreaLayoutGuide.topAnchor
+        case .belowSafeArea:
+            topAnchor      == superview.safeAreaLayoutGuide.bottomAnchor
+            leadingAnchor  == superview.leadingAnchor
+            trailingAnchor == superview.trailingAnchor
+            bottomAnchor   == superview.bottomAnchor
+        case .topBar:
+            layoutIfNeeded()
+            controller?.additionalSafeAreaInsets.top = bounds.height
+            leadingAnchor  == superview.leadingAnchor
+            trailingAnchor == superview.trailingAnchor
+            bottomAnchor   == superview.safeAreaLayoutGuide.topAnchor
+        case .bottomBar:
+            layoutIfNeeded()
+            controller?.additionalSafeAreaInsets.bottom = bounds.height
+            topAnchor      == superview.safeAreaLayoutGuide.bottomAnchor
+            leadingAnchor  == superview.leadingAnchor
+            trailingAnchor == superview.trailingAnchor
         }
     }
 }

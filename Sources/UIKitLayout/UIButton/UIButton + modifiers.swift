@@ -88,6 +88,16 @@ extension UIButton {
     }
     
     @discardableResult
+    public func strokeStyle(_ color: UIColor, cornerRadius: CGFloat? = nil, width: CGFloat = 1) -> Self {
+        if let cornerRadius {
+            configuration?.background.cornerRadius = cornerRadius
+        }
+        configuration?.background.strokeColor = color
+        configuration?.background.strokeWidth = width
+        return self
+    }
+    
+    @discardableResult
     public func image(_ image: UIImage) -> Self {
         configuration?.image = image
         return self

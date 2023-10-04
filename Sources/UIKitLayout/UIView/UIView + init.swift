@@ -9,26 +9,26 @@ import UIKit
 extension UIView {
     
     private struct AssociatedKeys {
-        static var longPressAction = "longPressAction"
-        static var tapGestureAction = "tapGestureAction"
-        static var longPressHandler = "longPressHandler"
-        static var tapGestureHandler = "tapGestureHandler"
+        static var longPressAction = "longPressActions"
+        static var tapGestureAction = "tapGestureActions"
+        static var longPressHandler = "longPressHandlers"
+        static var tapGestureHandler = "tapGestureHandlers"
     }
     
-    internal var longPressAction: (() -> Void)? {
-        get { getAssociatedObject(key: &AssociatedKeys.longPressAction) }
+    internal var longPressActions: [(() -> Void)] {
+        get { getAssociatedObject(key: &AssociatedKeys.longPressAction) ?? [] }
         set { setAssociatedObject(key: &AssociatedKeys.longPressAction, value: newValue) }
     }
-    internal var tapGestureAction: (() -> Void)? {
-        get { getAssociatedObject(key: &AssociatedKeys.tapGestureAction) }
+    internal var tapGestureActions: [(() -> Void)] {
+        get { getAssociatedObject(key: &AssociatedKeys.tapGestureAction) ?? [] }
         set { setAssociatedObject(key: &AssociatedKeys.tapGestureAction, value: newValue) }
     }
-    internal var longPressHandler: ((UIView) -> Void)? {
-        get { getAssociatedObject(key: &AssociatedKeys.longPressHandler) }
+    internal var longPressHandlers: [((UIView) -> Void)] {
+        get { getAssociatedObject(key: &AssociatedKeys.longPressHandler) ?? [] }
         set { setAssociatedObject(key: &AssociatedKeys.longPressHandler, value: newValue) }
     }
-    internal var tapGestureHandler: ((UIView) -> Void)? {
-        get { getAssociatedObject(key: &AssociatedKeys.tapGestureHandler) }
+    internal var tapGestureHandlers: [((UIView) -> Void)] {
+        get { getAssociatedObject(key: &AssociatedKeys.tapGestureHandler) ?? [] }
         set { setAssociatedObject(key: &AssociatedKeys.tapGestureHandler, value: newValue) }
     }
 }

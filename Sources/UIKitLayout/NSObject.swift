@@ -9,10 +9,14 @@ import Combine
 
 extension NSObject {
     func getAssociatedObject<T>(key: inout String) -> T? {
-        objc_getAssociatedObject(self, &key) as? T
+        withUnsafePointer(to: &key) {
+            objc_getAssociatedObject(self, $0) as? T
+        }
     }
     func setAssociatedObject<T>(key: inout String, value: T) {
-        objc_setAssociatedObject(self, &key, value, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        withUnsafePointer(to: &key) {
+            objc_setAssociatedObject(self, $0, value, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
     }
 }
 

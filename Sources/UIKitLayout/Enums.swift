@@ -36,4 +36,8 @@ public enum ViewAlignment {
     case inSafeArea
     case inSafeAreaIgnoringTop
     case inSafeAreaIgnoringBottom
+    case aboveSafeArea
+    case belowSafeArea
+    case topBar
+    case bottomBar
 }
