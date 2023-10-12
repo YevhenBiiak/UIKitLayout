@@ -5,6 +5,7 @@
 //
 
 import UIKit
+import AnchorLayout
 
 @resultBuilder
 public struct StackViewBuilder {
@@ -23,6 +24,17 @@ extension UIStackView: UIGestureRecognizerDelegate {
     public convenience init(_ axis: NSLayoutConstraint.Axis, @StackViewBuilder _ views: () -> [UIView]) {
         self.init()
         self.axis = axis
-        addArrangedSubviews(views())
+        let views = views()
+        addArrangedSubviews(views)
+        for view in views {
+            if let widthPercentage = view.widthPercentage?.value {
+                view.translatesAutoresizingMaskIntoConstraints = false
+                view.widthAnchor == widthAnchor * widthPercentage
+            }
+            if let heightPercentage = view.heightPercentage?.value {
+                view.translatesAutoresizingMaskIntoConstraints = false
+                view.heightAnchor == heightAnchor * heightPercentage
+            }
+        }
     }
 }

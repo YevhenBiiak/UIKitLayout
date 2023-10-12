@@ -9,10 +9,12 @@ import UIKit
 extension UIView {
     
     private struct AssociatedKeys {
-        static var longPressAction = "longPressActions"
-        static var tapGestureAction = "tapGestureActions"
-        static var longPressHandler = "longPressHandlers"
-        static var tapGestureHandler = "tapGestureHandlers"
+        static var longPressAction = "_longPressActions_"
+        static var tapGestureAction = "_tapGestureActions_"
+        static var longPressHandler = "_longPressHandlers_"
+        static var tapGestureHandler = "_tapGestureHandlers_"
+        static var widthPercentage = "_widthPercentage_"
+        static var heightPercentage = "_heightPercentage_"
     }
     
     internal var longPressActions: [(() -> Void)] {
@@ -30,5 +32,14 @@ extension UIView {
     internal var tapGestureHandlers: [((UIView) -> Void)] {
         get { getAssociatedObject(key: &AssociatedKeys.tapGestureHandler) ?? [] }
         set { setAssociatedObject(key: &AssociatedKeys.tapGestureHandler, value: newValue) }
+    }
+    
+    internal var widthPercentage: PostfixPercentage? {
+        get { getAssociatedObject(key: &AssociatedKeys.widthPercentage) }
+        set { setAssociatedObject(key: &AssociatedKeys.widthPercentage, value: newValue) }
+    }
+    internal var heightPercentage: PostfixPercentage? {
+        get { getAssociatedObject(key: &AssociatedKeys.heightPercentage) }
+        set { setAssociatedObject(key: &AssociatedKeys.heightPercentage, value: newValue) }
     }
 }

@@ -26,17 +26,28 @@ extension UIView {
     }
     
     @discardableResult
-    public func frame(width: CGFloat? = nil, height: CGFloat? = nil) -> Self {
-        if let width {
-            removeConstraints(.width)
-            translatesAutoresizingMaskIntoConstraints = false
-            widthAnchor == width
-        }
-        if let height {
-            removeConstraints(.height)
-            translatesAutoresizingMaskIntoConstraints = false
-            heightAnchor == height
-        }
+    public func frame(width: CGFloat) -> Self {
+        removeConstraints(.width)
+        translatesAutoresizingMaskIntoConstraints = false
+        widthAnchor == width
+        return self
+    }
+    
+    @discardableResult
+    public func frame(height: CGFloat) -> Self {
+        removeConstraints(.height)
+        translatesAutoresizingMaskIntoConstraints = false
+        heightAnchor == height
+        return self
+    }
+    
+    @discardableResult
+    public func frame(width: CGFloat, height: CGFloat) -> Self {
+        removeConstraints(.width)
+        removeConstraints(.height)
+        translatesAutoresizingMaskIntoConstraints = false
+        widthAnchor == width
+        heightAnchor == height
         return self
     }
     
@@ -55,11 +66,56 @@ extension UIView {
         return self
     }
     
+    @discardableResult
+    public func frame(width: PostfixPercentage) -> Self {
+        widthPercentage = width
+        // will be setted later in alignInSuperview(_:)
+        return self
+    }
+    
+    @discardableResult
+    public func frame(height: PostfixPercentage) -> Self {
+        heightPercentage = height
+        // will be setted later in alignInSuperview(_:)
+        return self
+    }
+    
+    @discardableResult
+    public func frame(width: PostfixPercentage, height: PostfixPercentage) -> Self {
+        widthPercentage = width
+        heightPercentage = height
+        // will be setted later in alignInSuperview(_:)
+        return self
+    }
+    
+    @discardableResult
+    public func frame(width: CGFloat, height: PostfixPercentage) -> Self {
+        removeConstraints(.width)
+        translatesAutoresizingMaskIntoConstraints = false
+        widthAnchor == width
+        
+        heightPercentage = height
+        // will be setted later in alignInSuperview(_:)
+        return self
+    }
+    
+    @discardableResult
+    public func frame(width: PostfixPercentage, height: CGFloat) -> Self {
+        removeConstraints(.height)
+        translatesAutoresizingMaskIntoConstraints = false
+        heightAnchor == height
+        
+        widthPercentage = width
+        // will be setted later in alignInSuperview(_:)
+        return self
+    }
     
     @discardableResult
     public func padding(left: CGFloat = 0, right: CGFloat = 0, top: CGFloat = 0, bottom: CGFloat = 0) -> UIView {
         removeConstraints([.top, .leading, .trailing, .bottom], to: .superview)
         let view = UIView()
+        view.widthPercentage = widthPercentage
+        view.heightPercentage = heightPercentage
         view.addSubview(self, tamic: false)
         topAnchor      == view.topAnchor + top
         leadingAnchor  == view.leadingAnchor + left

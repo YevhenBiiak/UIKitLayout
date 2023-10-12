@@ -9,6 +9,14 @@ import AnchorLayout
 
 extension UIView {
     
+    public var isPad: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad
+    }
+    
+    public var isPhone: Bool {
+        UIDevice.current.userInterfaceIdiom == .phone
+    }
+    
     public var isRootView: Bool {
         rootView === self
     }
@@ -35,47 +43,27 @@ extension UIView {
         translatesAutoresizingMaskIntoConstraints = false
         
         switch alignment {
+        
+        // MARK: Filling cases
+        
         case .fill:
-            if hasWidthConstraint {
+            if hasWidthConstraint || widthPercentage != nil {
                 return alignInSuperview(.fillVerticaly) }
-            if hasHeightConstraint {
+            if hasHeightConstraint || heightPercentage != nil {
                 return alignInSuperview(.fillHorizontaly)
             }
             edgeAnchors == superview.edgeAnchors
-        case .fillTop:
-            if hasWidthConstraint {
-                return alignInSuperview(.top)
+        case .fillVerticaly:
+            if hasHeightConstraint || heightPercentage != nil {
+                return alignInSuperview(.center)
             }
             topAnchor      == superview.topAnchor
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor == superview.trailingAnchor
-            bottomAnchor   <= superview.bottomAnchor
-        case .fillBottom:
-            if hasWidthConstraint {
-                return alignInSuperview(.bottom)
-            }
-            topAnchor      >= superview.topAnchor
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor == superview.trailingAnchor
-            bottomAnchor   == superview.bottomAnchor
-        case .fillLeading:
-            if hasHeightConstraint {
-                return alignInSuperview(.leading)
-            }
-            topAnchor      == superview.topAnchor
-            leadingAnchor  == superview.leadingAnchor
+            leadingAnchor  >= superview.leadingAnchor
             trailingAnchor <= superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
-        case .fillTrailing:
-            if hasHeightConstraint {
-                return alignInSuperview(.trailing)
-            }
-            topAnchor      == superview.topAnchor
-            leadingAnchor  <= superview.leadingAnchor
-            trailingAnchor == superview.trailingAnchor
-            bottomAnchor   == superview.bottomAnchor
+            centerXAnchor  == superview.centerXAnchor
         case .fillHorizontaly:
-            if hasWidthConstraint {
+            if hasWidthConstraint || widthPercentage != nil {
                 return alignInSuperview(.center)
             }
             topAnchor      >= superview.topAnchor
@@ -83,37 +71,76 @@ extension UIView {
             trailingAnchor == superview.trailingAnchor
             bottomAnchor   <= superview.bottomAnchor
             centerYAnchor  == superview.centerYAnchor
-        case .fillVerticaly:
-            if hasHeightConstraint {
-                return alignInSuperview(.center)
+        case .fillTop:
+            if hasWidthConstraint || widthPercentage != nil {
+                return alignInSuperview(.top)
             }
             topAnchor      == superview.topAnchor
-            leadingAnchor  >= superview.leadingAnchor
+            leadingAnchor  == superview.leadingAnchor
+            trailingAnchor == superview.trailingAnchor
+            bottomAnchor   <= superview.bottomAnchor
+        case .fillBottom:
+            if hasWidthConstraint || widthPercentage != nil {
+                return alignInSuperview(.bottom)
+            }
+            topAnchor      >= superview.topAnchor
+            leadingAnchor  == superview.leadingAnchor
+            trailingAnchor == superview.trailingAnchor
+            bottomAnchor   == superview.bottomAnchor
+        case .fillLeading:
+            if hasHeightConstraint || heightPercentage != nil {
+                return alignInSuperview(.leading)
+            }
+            topAnchor      == superview.topAnchor
+            leadingAnchor  == superview.leadingAnchor
             trailingAnchor <= superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
-            centerXAnchor  == superview.centerXAnchor
+        case .fillTrailing:
+            if hasHeightConstraint || heightPercentage != nil {
+                return alignInSuperview(.trailing)
+            }
+            topAnchor      == superview.topAnchor
+            leadingAnchor  <= superview.leadingAnchor
+            trailingAnchor == superview.trailingAnchor
+            bottomAnchor   == superview.bottomAnchor
+            
+        // MARK: Corner cases
+        
+        case .topLeading:
+            topAnchor      == superview.topAnchor
+            leadingAnchor  == superview.leadingAnchor
+            trailingAnchor <= superview.trailingAnchor
+            bottomAnchor   <= superview.bottomAnchor
+        case .topTrailing:
+            topAnchor      == superview.topAnchor
+            leadingAnchor  >= superview.leadingAnchor
+            trailingAnchor == superview.trailingAnchor
+            bottomAnchor   <= superview.bottomAnchor
+        case .bottomLeading:
+            topAnchor      >= superview.topAnchor
+            leadingAnchor  == superview.leadingAnchor
+            trailingAnchor <= superview.trailingAnchor
+            bottomAnchor   == superview.bottomAnchor
+        case .bottomTrailing:
+            topAnchor      >= superview.topAnchor
+            leadingAnchor  >= superview.leadingAnchor
+            trailingAnchor == superview.trailingAnchor
+            bottomAnchor   == superview.bottomAnchor
+            
+        // MARK: Centering cases
+        
         case .center:
             topAnchor      >= superview.topAnchor
             leadingAnchor  >= superview.leadingAnchor
             trailingAnchor <= superview.trailingAnchor
             bottomAnchor   <= superview.bottomAnchor
             centerAnchor   == superview.centerAnchor
-        case .topLeading:
-            topAnchor      == superview.topAnchor
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor <= superview.trailingAnchor
-            bottomAnchor   <= superview.bottomAnchor
         case .top:
             topAnchor      == superview.topAnchor
             leadingAnchor  >= superview.leadingAnchor
             trailingAnchor <= superview.trailingAnchor
             bottomAnchor   <= superview.bottomAnchor
             centerXAnchor  == superview.centerXAnchor
-        case .topTrailing:
-            topAnchor      == superview.topAnchor
-            leadingAnchor  >= superview.leadingAnchor
-            trailingAnchor == superview.trailingAnchor
-            bottomAnchor   <= superview.bottomAnchor
         case .leading:
             topAnchor      >= superview.topAnchor
             leadingAnchor  == superview.leadingAnchor
@@ -126,22 +153,15 @@ extension UIView {
             trailingAnchor == superview.trailingAnchor
             bottomAnchor   <= superview.bottomAnchor
             centerYAnchor  == superview.centerYAnchor
-        case .bottomLeading:
-            topAnchor      >= superview.topAnchor
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor <= superview.trailingAnchor
-            bottomAnchor   == superview.bottomAnchor
         case .bottom:
             topAnchor      >= superview.topAnchor
             leadingAnchor  >= superview.leadingAnchor
             trailingAnchor <= superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
             centerXAnchor  == superview.centerXAnchor
-        case .bottomTrailing:
-            topAnchor      >= superview.topAnchor
-            leadingAnchor  >= superview.leadingAnchor
-            trailingAnchor == superview.trailingAnchor
-            bottomAnchor   == superview.bottomAnchor
+            
+        // MARK: Safe Area cases
+        
         case .inSafeArea:
             topAnchor      == superview.safeAreaLayoutGuide.topAnchor
             leadingAnchor  == superview.safeAreaLayoutGuide.leadingAnchor
@@ -167,6 +187,9 @@ extension UIView {
             leadingAnchor  == superview.leadingAnchor
             trailingAnchor == superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
+        
+        // MARK: AdditionalSafeAreaInsets cases
+        
         case .topBar:
             layoutIfNeeded()
             controller?.additionalSafeAreaInsets.top = bounds.height
@@ -179,6 +202,15 @@ extension UIView {
             topAnchor      == superview.safeAreaLayoutGuide.bottomAnchor
             leadingAnchor  == superview.leadingAnchor
             trailingAnchor == superview.trailingAnchor
+        }
+        
+        // MARK: Set Width, Height precentage if any
+        
+        if let widthPercentage {
+            widthAnchor == superview.widthAnchor * widthPercentage.value
+        }
+        if let heightPercentage {
+            heightAnchor == superview.heightAnchor * heightPercentage.value
         }
     }
 }
