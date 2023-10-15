@@ -1,6 +1,6 @@
 <p align="center">
-    <a href="#requirements">Requirements</a>
-  • <a href="#description">Description</a>
+    <a href="#description">Description</a>
+  • <a href="#requirements">Requirements</a>
   • <a href="#installation">Installation</a>
   • <a href="#usage">Usage</a>
 </p>
@@ -15,13 +15,14 @@ Swift 5.8, iOS 15
 ## Installation
 `UIKitLayout` is installed via the official [Swift Package Manager](https://swift.org/package-manager/).  
 
-Select `Xcode` > `File` > `Swift Packages` > `Add Package Dependency...`  
+Select `Xcode` > `File` > `Add Package Dependency...`  
 and add `https://github.com/YevhenBiiak/UIKitLayout`.  
 ```swift 
 import UIKitLayout
 ```
 
 ## Usage
+
 ### Add subview:   
 ```swift
 func subview(_ alignment: ViewAlignment, _ content: () -> UIView) -> Self
@@ -42,6 +43,8 @@ myView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
 myView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 ```
 
+
+
 ### Add subview in SafeArea:  
 `Important! Do not use the safeArea alignment for views that are not the root view of the UIViewController. This can give you unexpected results`
 
@@ -60,6 +63,10 @@ myView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor)
 myView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
 myView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
 ```
+
+
+
+
 ### Ignore Top or Bottom safeAreaLayoutGuide.  
 `Top or Bottom anchor of subview will be pinned so superview, not to safeAreaLayoutGuide`
 
@@ -73,6 +80,10 @@ view.subview(.inSafeAreaIgnoringBottom) {
     UIView()
 }
 ```
+
+
+
+
 ### Other alignment cases:
 ![](https://github.com/YevhenBiiak/UIKitLayout/assets/80542175/e68ccf2a-e91d-4c23-affc-de74474d3254)
 
@@ -105,7 +116,7 @@ class ViewController: UIViewController {
 ### Padding and Offset
 Only three UIView modifiers return another UIView container, not Self.  
 ```swift
-func padding(_ level:_)
+func padding(_ level:_) -> UIView
 func padding(left:_, right:_, top:_, bottom:_) -> UIView 
 func offset(x:_, y:_) -> UIView
 ```
