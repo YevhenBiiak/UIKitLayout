@@ -25,6 +25,8 @@ extension UIView {
         return self
     }
     
+    // MARK: Frame modifiers
+    
     @discardableResult
     public func frame(width: CGFloat) -> Self {
         removeConstraints(.width)
@@ -52,17 +54,8 @@ extension UIView {
     }
     
     @discardableResult
-    public func frame(minWidth: CGFloat? = nil, minHeight: CGFloat? = nil) -> Self {
-        if let minWidth {
-            removeConstraints(.width)
-            translatesAutoresizingMaskIntoConstraints = false
-            widthAnchor >= minWidth
-        }
-        if let minHeight {
-            removeConstraints(.height)
-            translatesAutoresizingMaskIntoConstraints = false
-            heightAnchor >= minHeight
-        }
+    public func frame(aspectRatio: CGFloat) -> Self {
+        widthAnchor == heightAnchor * aspectRatio
         return self
     }
     
@@ -93,7 +86,6 @@ extension UIView {
         removeConstraints(.width)
         translatesAutoresizingMaskIntoConstraints = false
         widthAnchor == width
-        
         heightPercentage = height
         // will be setted later in alignInSuperview(_:)
         return self
@@ -104,9 +96,23 @@ extension UIView {
         removeConstraints(.height)
         translatesAutoresizingMaskIntoConstraints = false
         heightAnchor == height
-        
         widthPercentage = width
         // will be setted later in alignInSuperview(_:)
+        return self
+    }
+    
+    @discardableResult
+    public func frame(minWidth: CGFloat? = nil, minHeight: CGFloat? = nil) -> Self {
+        if let minWidth {
+            removeConstraints(.width)
+            translatesAutoresizingMaskIntoConstraints = false
+            widthAnchor >= minWidth
+        }
+        if let minHeight {
+            removeConstraints(.height)
+            translatesAutoresizingMaskIntoConstraints = false
+            heightAnchor >= minHeight
+        }
         return self
     }
     
@@ -166,7 +172,7 @@ extension UIView {
         return self
     }
     
-    // Actions
+    // MARK: Actions modifiers
     
     @discardableResult
     public func onTapGesture(_ perform: @escaping () -> Void) -> Self {
@@ -225,7 +231,7 @@ extension UIView {
         }
     }
     
-    // Appearance
+    // MARK: Appearance modifiers
     
     @discardableResult
     public func backgroundColor(_ color: UIColor) -> Self {

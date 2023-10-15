@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/YevhenBiiak/AnchorLayout",
       "state" : {
-        "revision" : "c19a4a7e64e628d402620c79274a3d6a8f1ed23c",
-        "version" : "1.1.0"
+        "revision" : "cae6ddfbbf4a9168e2f3dbcf1141904ff4a48bc4",
+        "version" : "1.1.2"
       }
     }
   ],
