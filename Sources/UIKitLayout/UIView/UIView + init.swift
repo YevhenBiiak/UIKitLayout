@@ -6,6 +6,18 @@
 
 import UIKit
 
+public protocol UIViewContainerable {}
+extension UIView: UIViewContainerable {}
+
+extension UIViewContainerable {
+    public init(_ alignment: ViewAlignment, _ content: () -> UIView) where Self == UIView {
+        self.init()
+        let view = content()
+        self.addSubview(view)
+        view.alignInSuperview(alignment)
+    }
+}
+
 extension UIView {
     
     private struct AssociatedKeys {

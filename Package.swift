@@ -12,15 +12,12 @@ let package = Package(
             name: "UIKitLayout",
             targets: ["UIKitLayout"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/YevhenBiiak/AnchorLayout", exact: "1.1.2"),
-    ],
+    dependencies: [],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "UIKitLayout",
-            dependencies: ["AnchorLayout"]
+            name: "UIKitLayout"
         ),
         .testTarget(
             name: "UIKitLayoutTests",

@@ -5,7 +5,6 @@
 //
 
 import UIKit
-import AnchorLayout
 
 extension UIView {
     
@@ -61,23 +60,43 @@ extension UIView {
     
     @discardableResult
     public func frame(width: PostfixPercentage) -> Self {
-        widthPercentage = width
-        // will be setted later in alignInSuperview(_:)
+        if let superview {
+            removeConstraints(.width, relativeTo: .superview)
+            translatesAutoresizingMaskIntoConstraints = false
+            widthAnchor == superview.widthAnchor * width.value
+        } else {
+            widthPercentage = width
+            /* will be setted later in alignInSuperview(_:) */
+        }
         return self
     }
     
     @discardableResult
     public func frame(height: PostfixPercentage) -> Self {
-        heightPercentage = height
-        // will be setted later in alignInSuperview(_:)
+        if let superview {
+            removeConstraints(.height, relativeTo: .superview)
+            translatesAutoresizingMaskIntoConstraints = false
+            heightAnchor == superview.heightAnchor * height.value
+        } else {
+            heightPercentage = height
+            /* will be setted later in alignInSuperview(_:) */
+        }
         return self
     }
     
     @discardableResult
     public func frame(width: PostfixPercentage, height: PostfixPercentage) -> Self {
-        widthPercentage = width
-        heightPercentage = height
-        // will be setted later in alignInSuperview(_:)
+        if let superview {
+            removeConstraints(.width, relativeTo: .superview)
+            removeConstraints(.height, relativeTo: .superview)
+            translatesAutoresizingMaskIntoConstraints = false
+            widthAnchor == superview.widthAnchor * width.value
+            heightAnchor == superview.heightAnchor * height.value
+        } else {
+            widthPercentage = width
+            heightPercentage = height
+            /* will be setted later in alignInSuperview(_:) */
+        }
         return self
     }
     
@@ -86,8 +105,13 @@ extension UIView {
         removeConstraints(.width)
         translatesAutoresizingMaskIntoConstraints = false
         widthAnchor == width
-        heightPercentage = height
-        // will be setted later in alignInSuperview(_:)
+        if let superview {
+            removeConstraints(.height, relativeTo: .superview)
+            heightAnchor == superview.heightAnchor * height.value
+        } else {
+            heightPercentage = height
+            /* will be setted later in alignInSuperview(_:) */
+        }
         return self
     }
     
@@ -96,8 +120,13 @@ extension UIView {
         removeConstraints(.height)
         translatesAutoresizingMaskIntoConstraints = false
         heightAnchor == height
-        widthPercentage = width
-        // will be setted later in alignInSuperview(_:)
+        if let superview {
+            removeConstraints(.width, relativeTo: .superview)
+            widthAnchor == superview.widthAnchor * width.value
+        } else {
+            widthPercentage = width
+            /* will be setted later in alignInSuperview(_:) */
+        }
         return self
     }
     

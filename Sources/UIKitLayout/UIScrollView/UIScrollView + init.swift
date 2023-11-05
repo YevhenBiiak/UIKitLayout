@@ -5,19 +5,21 @@
 //
 
 import UIKit
-import AnchorLayout
 
-extension UIScrollView {
+public protocol UIScrollViewInitializable {}
+extension UIScrollView: UIScrollViewInitializable {}
+
+extension UIScrollViewInitializable {
     
-    public convenience init(_ axis: NSLayoutConstraint.Axis, _ content: () -> UIView) {
+    public init(_ axis: NSLayoutConstraint.Axis, _ content: () -> UIView) where Self == UIScrollView {
         self.init(frame: .zero)
         let view = content()
-        addSubview(view, tamic: false)
-        view.edgeAnchors == edgeAnchors
+        self.addSubview(view, tamic: false)
+        view.edgeAnchors == self.edgeAnchors
         if axis == .horizontal {
-            view.heightAnchor == frameLayoutGuide.heightAnchor
+            view.heightAnchor == self.frameLayoutGuide.heightAnchor
         } else {
-            view.widthAnchor == frameLayoutGuide.widthAnchor
+            view.widthAnchor == self.frameLayoutGuide.widthAnchor
         }
     }
 }

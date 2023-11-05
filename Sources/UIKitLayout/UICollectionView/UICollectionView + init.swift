@@ -13,4 +13,8 @@ extension UICollectionView {
         flowLayout(layout)
         self.init(frame: .zero, collectionViewLayout: layout)
     }
+    
+    public convenience init(layout: UICollectionViewLayout) {
+        self.init(frame: .zero, collectionViewLayout: layout)
+    }
 }
