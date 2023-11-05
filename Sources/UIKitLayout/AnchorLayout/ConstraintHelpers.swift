@@ -114,7 +114,8 @@ extension UIView {
     
     public func removeConstraints(_ attribute: DimensionAttribute, relativeTo relation: ConstraintRelation) {
         constraints(attribute, relativeTo: relation).forEach { constraint in
-            removeConstraint(constraint)
+            (constraint.firstItem as? UIView)?.removeConstraint(constraint)
+            (constraint.secondItem as? UIView)?.removeConstraint(constraint)
         }
     }
 }
