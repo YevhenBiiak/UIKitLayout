@@ -33,19 +33,23 @@ extension UIView {
     }
     
     public func constraints(_ attribute: DimensionAttribute, relativeTo relation: ConstraintRelation) -> [NSLayoutConstraint] {
-        
-        let constraints = constraints.filter {
-            (($0.firstItem  as? NSObject) == self && $0.firstAttribute  == attribute.nsAttribute) ||
-            (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute)
-        }
-        
         switch relation {
         case .superview:
+            let constraints = Set(self.constraints + (superview?.constraints ?? []))
             return constraints.filter {
-                (($0.firstItem  as? NSObject) == superview && $0.firstAttribute  == attribute.nsAttribute) ||
-                (($0.secondItem as? NSObject) == superview && $0.secondAttribute == attribute.nsAttribute)
+                (
+                    (($0.firstItem  as? NSObject) == self      && $0.firstAttribute  == attribute.nsAttribute) &&
+                    (($0.secondItem as? NSObject) == superview && $0.secondAttribute == attribute.nsAttribute)
+                ) || (
+                    (($0.firstItem  as? NSObject) == superview && $0.firstAttribute  == attribute.nsAttribute) &&
+                    (($0.secondItem as? NSObject) == self      && $0.secondAttribute == attribute.nsAttribute)
+                )
             }
         case .subviews:
+            let constraints = self.constraints.filter {
+                (($0.firstItem  as? NSObject) == self && $0.firstAttribute  == attribute.nsAttribute) ||
+                (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute)
+            }
             return constraints.filter {
                 for subview in subviews {
                     if (($0.firstItem  as? NSObject) == subview && $0.firstAttribute  == attribute.nsAttribute) ||
