@@ -6,21 +6,21 @@
 
 import UIKit
 
-class UICollectionViewGridLayout: UICollectionViewLayout {
+public class UICollectionViewGridLayout: UICollectionViewLayout {
     
-    enum GridLayoutColumn {
+    public enum GridLayoutColumn {
         case count(CGFloat)
         case width(CGFloat)
         case aspectRatio(toRow: CGFloat)
     }
     
-    enum GridLayoutRow {
+    public enum GridLayoutRow {
         case count(CGFloat)
         case height(CGFloat)
         case aspectRatio(toColumn: CGFloat)
     }
     
-    struct GridLayoutSpacing: ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
+    public struct GridLayoutSpacing: ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
 
         fileprivate var horizontal: CGFloat
         fileprivate var vertical: CGFloat
@@ -30,42 +30,39 @@ class UICollectionViewGridLayout: UICollectionViewLayout {
             self.vertical = vertical
         }
         
-        init(floatLiteral value: Double) {
+        public init(floatLiteral value: Double) {
             self.horizontal = CGFloat(value)
             self.vertical = CGFloat(value)
         }
         
-        init(integerLiteral value: Int) {
+        public init(integerLiteral value: Int) {
             self.horizontal = CGFloat(value)
             self.vertical = CGFloat(value)
         }
         
-        static func custom(horizontal: CGFloat, vertical: CGFloat) -> GridLayoutSpacing {
+        public static func custom(horizontal: CGFloat, vertical: CGFloat) -> GridLayoutSpacing {
             GridLayoutSpacing(horizontal: horizontal, vertical: vertical)
         }
     }
     
+    /// by default row = .count(2)
     public var row: GridLayoutRow = .count(2)
+    /// by default column = .count(2)
     public var column: GridLayoutColumn = .count(2)
+    /// by default spacing = 0
     public var spacing: GridLayoutSpacing = 0
+    /// by default scrollDirection = .vertical
     public var scrollDirection: UICollectionView.ScrollDirection = .vertical
+    /// by default contentInsets = .zero
     public var contentInsets: NSDirectionalEdgeInsets = .zero
     
     private var contentWidth: CGFloat = 0
     private var contentHeight: CGFloat = 0
     private var itemsAttributes = [UICollectionViewLayoutAttributes]()
     
-    override init() {
-        super.init()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-    
     // MARK: Overriden methods
     
-    override func prepare() {
+    public override func prepare() {
         super.prepare()
         
         // Calculate layout attributes for all items in the collection view
@@ -161,26 +158,26 @@ class UICollectionViewGridLayout: UICollectionViewLayout {
     }
     
     /// - Tag: CollectionViewContentSize
-    override var collectionViewContentSize: CGSize {
+    public override var collectionViewContentSize: CGSize {
         CGSize(width: contentWidth, height: contentHeight)
     }
     
     /// - Tag: LayoutAttributesForItem
-    override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+    public override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         itemsAttributes.first {
             $0.indexPath == indexPath
         }
     }
     
     /// - Tag: LayoutAttributesForElements
-    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+    public override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         itemsAttributes.filter {
             $0.frame.intersects(rect)
         }
     }
     
     /// - Tag: ShouldInvalidateLayout
-    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+    public override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         if scrollDirection == .vertical, let oldWidth = collectionView?.bounds.width {
             return oldWidth != newBounds.width
         } else if scrollDirection == .horizontal, let oldHeight = collectionView?.bounds.height {
@@ -191,7 +188,7 @@ class UICollectionViewGridLayout: UICollectionViewLayout {
     }
     
     /// - Tag: InvalidateLayout
-    override func invalidateLayout() {
+    public override func invalidateLayout() {
         super.invalidateLayout()
         
         itemsAttributes = []
