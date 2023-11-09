@@ -167,6 +167,18 @@ extension UIView {
     }
     
     @discardableResult
+    public func padding(_ axis: NSLayoutConstraint.Axis, length: CGFloat) -> UIView {
+        switch axis {
+        case .horizontal:
+            return padding(left: length, right: length, top: 0, bottom: 0)
+        case .vertical:
+            return padding(left: 0, right: 0, top: length, bottom: length)
+        @unknown default:
+            return padding()
+        }
+    }
+    
+    @discardableResult
     public func offset(x: CGFloat, y: CGFloat) -> UIView {
         return padding(left: x, right: -x, top: y, bottom: -y)
     }
@@ -305,8 +317,8 @@ extension UIView {
     }
     
     @discardableResult
-    public func clipsToBounds(_ flag: Bool) -> Self {
-        clipsToBounds = flag
+    public func clipsToBounds(_ enabled: Bool) -> Self {
+        clipsToBounds = enabled
         return self
     }
     

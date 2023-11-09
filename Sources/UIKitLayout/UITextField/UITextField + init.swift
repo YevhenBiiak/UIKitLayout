@@ -32,6 +32,11 @@ extension UITextField {
         set { setAssociatedObject(key: &AssociatedKeys.errorLabel, value: newValue) }
     }
     
+    public convenience init(_ placeholder: String) {
+        self.init(frame: .zero)
+        self.placeholder = placeholder
+    }
+    
     public convenience init(_ placeholder: String, text: String) {
         self.init(frame: .zero)
         self.placeholder = placeholder

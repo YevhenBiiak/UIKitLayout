@@ -12,7 +12,7 @@ extension UICollectionView {
         _ type: Cell.Type,
         for indexPath: IndexPath,
         configurationHandler: ((_ cell: Cell) -> Void)? = nil
-    ) -> UICollectionViewCell where Cell: UICollectionViewCell, Cell: ReuseIdentifiable {
+    ) -> Cell where Cell: UICollectionViewCell, Cell: ReuseIdentifiable {
         
         let cell: Cell! = dequeueReusableCell(withReuseIdentifier: Cell.reuseId, for: indexPath) as? Cell
         cell.indexPath = indexPath

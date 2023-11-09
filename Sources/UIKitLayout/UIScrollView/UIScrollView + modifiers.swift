@@ -59,6 +59,12 @@ extension UIScrollView {
     }
     
     @discardableResult
+    public func bounces(_ enabled: Bool) -> Self {
+        bounces = enabled
+        return self
+    }
+    
+    @discardableResult
     public func pagingEnabled(_ enabled: Bool) -> Self {
         isPagingEnabled = enabled
         return self

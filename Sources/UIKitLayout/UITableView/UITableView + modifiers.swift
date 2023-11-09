@@ -15,6 +15,18 @@ extension UITableView {
     }
     
     @discardableResult
+    public func separatorStyle(_ style: UITableViewCell.SeparatorStyle) -> Self {
+        separatorStyle = style
+        return self
+    }
+    
+    @discardableResult
+    public func separatorColor(_ color: UIColor?) -> Self {
+        separatorColor = color
+        return self
+    }
+    
+    @discardableResult
     public func dataSource(_ dataSource: UITableViewDataSource) -> Self {
         self.dataSource = dataSource
         return self
@@ -33,8 +45,8 @@ extension UITableView {
     }
     
     @discardableResult
-    public func allowFocus(_ enable: Bool) -> Self {
-        allowsFocus = enable
+    public func allowsFocus(_ enabled: Bool) -> Self {
+        allowsFocus = enabled
         return self
     }
     

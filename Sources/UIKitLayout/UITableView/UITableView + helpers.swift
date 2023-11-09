@@ -12,7 +12,7 @@ extension UITableView {
         _ type: Cell.Type,
         for indexPath: IndexPath,
         configurationHandler: ((_ cell: Cell) -> Void)? = nil
-    ) -> UITableViewCell where Cell: UITableViewCell, Cell: ReuseIdentifiable {
+    ) -> Cell where Cell: UITableViewCell, Cell: ReuseIdentifiable {
         
         let cell: Cell! = dequeueReusableCell(withIdentifier: Cell.reuseId, for: indexPath) as? Cell
         cell.indexPath = indexPath
