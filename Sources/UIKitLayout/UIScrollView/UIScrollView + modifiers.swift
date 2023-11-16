@@ -15,6 +15,12 @@ extension UIScrollView {
     }
     
     @discardableResult
+    public func contentInsetAdjustmentBehavior(_ behavior: ContentInsetAdjustmentBehavior) -> Self {
+        contentInsetAdjustmentBehavior = behavior
+        return self
+    }
+    
+    @discardableResult
     public func contentInsets(_ edge: UIRectEdge, _ inset: CGFloat) -> Self {
         if edge.contains(.top) {
             contentInset.top = inset

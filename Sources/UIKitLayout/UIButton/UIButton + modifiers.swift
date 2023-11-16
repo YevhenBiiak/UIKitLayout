@@ -73,6 +73,20 @@ extension UIButton {
     }
     
     @discardableResult
+    public func titleLineBrakeMode(_ mode: NSLineBreakMode) -> Self {
+        validateConfiguration()
+        configuration?.titleLineBreakMode = mode
+        return self
+    }
+    
+    @discardableResult
+    public func subtitleLineBrakeMode(_ mode: NSLineBreakMode) -> Self {
+        validateConfiguration()
+        configuration?.subtitleLineBreakMode = mode
+        return self
+    }
+    
+    @discardableResult
     public func contentAlignment(_ alignment: UIControl.ContentHorizontalAlignment) -> Self {
         contentHorizontalAlignment = alignment
         return self

@@ -335,6 +335,12 @@ extension UIView {
     }
     
     @discardableResult
+    public func userInteractionEnabled(_ enabled: Bool) -> Self {
+        isUserInteractionEnabled = enabled
+        return self
+    }
+    
+    @discardableResult
     public func blur(_ style: UIBlurEffect.Style = .systemMaterial, intensity: CGFloat = 1.0) -> Self {
         let blurredView = VisualEffectView(style: style, intensity: intensity)
         insertSubview(blurredView, at: 0, tamic: false)
