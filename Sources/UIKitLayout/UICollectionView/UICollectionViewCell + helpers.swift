@@ -10,11 +10,19 @@ extension UICollectionReusableView: ReuseIdentifiable {}
 
 extension UICollectionViewCell {
     
-    public var indexPath: IndexPath? {
-        if let collectionView = superview as? UICollectionView {
-            return collectionView.indexPath(for: self)
-        } else {
-            return nil
+    private struct AssociatedKeys {
+        static var indexPath = "indexPath"
+    }
+    
+    public var indexPath: IndexPath {
+        get {
+            let indexPath: IndexPath? = getAssociatedObject(key: &AssociatedKeys.indexPath)
+            if let indexPath {
+                return indexPath
+            } else {
+                fatalError("if you want to use indexPath property use dequeueReusableCell<Cell> generic method")
+            }
         }
+        set { setAssociatedObject(key: &AssociatedKeys.indexPath, value: newValue) }
     }
 }
