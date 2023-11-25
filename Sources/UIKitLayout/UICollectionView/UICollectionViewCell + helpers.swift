@@ -10,12 +10,11 @@ extension UICollectionReusableView: ReuseIdentifiable {}
 
 extension UICollectionViewCell {
     
-    public var indexPath: IndexPath {
-        if let collectionView = superview as? UICollectionView,
-           let indexPath = collectionView.indexPath(for: self) {
-            return indexPath
+    public var indexPath: IndexPath? {
+        if let collectionView = superview as? UICollectionView {
+            return collectionView.indexPath(for: self)
         } else {
-            return IndexPath(item: 0, section: 0)
+            return nil
         }
     }
 }

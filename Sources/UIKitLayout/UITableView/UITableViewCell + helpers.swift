@@ -10,12 +10,11 @@ extension UITableViewCell: ReuseIdentifiable {}
 
 extension UITableViewCell {
     
-    public var indexPath: IndexPath {
-        if let tableView = superview as? UITableView,
-           let indexPath = tableView.indexPath(for: self) {
-            return indexPath
+    public var indexPath: IndexPath? {
+        if let tableView = superview as? UITableView {
+            return tableView.indexPath(for: self)
         } else {
-            return IndexPath(item: 0, section: 0)
+            return nil
         }
     }
 }
