@@ -10,19 +10,12 @@ extension UITableViewCell: ReuseIdentifiable {}
 
 extension UITableViewCell {
     
-    private struct AssociatedKeys {
-        static var indexPath = "indexPath"
-    }
-    
     public var indexPath: IndexPath {
-        get {
-            let indexPath: IndexPath? = getAssociatedObject(key: &AssociatedKeys.indexPath)
-            if let indexPath {
-                return indexPath
-            } else {
-                fatalError("if you want to use indexPath property use dequeueReusableCell<Cell> generic method")
-            }
+        if let tableView = superview as? UITableView,
+           let indexPath = tableView.indexPath(for: self) {
+            return indexPath
+        } else {
+            return IndexPath(item: 0, section: 0)
         }
-        set { setAssociatedObject(key: &AssociatedKeys.indexPath, value: newValue) }
     }
 }

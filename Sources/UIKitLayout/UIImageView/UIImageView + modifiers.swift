@@ -10,6 +10,12 @@ import UIKit
 extension UIImageView {
     
     @discardableResult
+    public func image(_ image: UIImage?) -> Self {
+        self.image = image
+        return self
+    }
+    
+    @discardableResult
     public func setImage(_ image: UIImage?) -> Self {
         DispatchQueue.global().async {
             let preparedImage = image?.preparingForDisplay()

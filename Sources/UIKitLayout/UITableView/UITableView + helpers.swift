@@ -15,7 +15,6 @@ extension UITableView {
     ) -> Cell where Cell: UITableViewCell, Cell: ReuseIdentifiable {
         
         let cell: Cell! = dequeueReusableCell(withIdentifier: Cell.reuseId, for: indexPath) as? Cell
-        cell.indexPath = indexPath
         configurationHandler?(cell)
         
         return cell

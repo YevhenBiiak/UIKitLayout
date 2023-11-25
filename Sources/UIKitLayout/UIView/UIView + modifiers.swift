@@ -131,6 +131,7 @@ extension UIView {
     }
     
     @discardableResult
+    @available(*, deprecated, message: "Might cause unexpected results")
     public func frame(minWidth: CGFloat? = nil, minHeight: CGFloat? = nil) -> Self {
         if let minWidth {
             removeConstraints(.width)
@@ -184,6 +185,7 @@ extension UIView {
     }
     
     @discardableResult
+    @available(*, deprecated, renamed: "frame(aspectRatio:)")
     public func aspectRatio(_ aspectRatio: CGFloat) -> Self {
         widthAnchor == heightAnchor * aspectRatio
         return self

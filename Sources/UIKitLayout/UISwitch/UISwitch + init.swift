@@ -1,5 +1,5 @@
 //
-//  Switch + init.swift
+//  UISwitch + init.swift
 //
 //  Created by Yevhen Biiak on 14.08.2023.
 //

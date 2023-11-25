@@ -37,6 +37,32 @@ extension UIView {
         subviews.forEach { $0.removeFromSuperview() }
     }
     
+    public func findFirst<V>(_ type: V.Type) -> V? where V: UIView {
+        for view in subviews {
+            if let v = view as? V {
+                return v
+            }
+        }
+        for view in subviews {
+            if let v = view.findFirst(V.self) {
+                return v
+            }
+        }
+        return nil
+    }
+    
+    public func findAll<V>(_ type: V.Type) -> [V] where V: UIView {
+        var views: [V] = []
+        
+        for view in subviews {
+            if let v = view as? V {
+                views.append(v)
+            }
+            views.append(contentsOf: view.findAll(V.self))
+        }
+        return views
+    }
+    
     internal func alignInSuperview(_ alignment: ViewAlignment) {
         guard let superview else { return }
         translatesAutoresizingMaskIntoConstraints = false

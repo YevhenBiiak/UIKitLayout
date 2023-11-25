@@ -66,6 +66,13 @@ extension UIButton {
     }
     
     @discardableResult
+    public func adjustFontSize(minScale: CGFloat) -> Self {
+        validateConfiguration()
+        findAll(UILabel.self).forEach { $0.adjustFontSize(minScale: minScale) }
+        return self
+    }
+    
+    @discardableResult
     public func titleAlignment(_ alignment: UIButton.Configuration.TitleAlignment) -> Self {
         validateConfiguration()
         configuration?.titleAlignment = alignment
