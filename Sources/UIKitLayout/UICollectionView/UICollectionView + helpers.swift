@@ -15,6 +15,7 @@ extension UICollectionView {
     ) -> Cell where Cell: UICollectionViewCell, Cell: ReuseIdentifiable {
         
         let cell: Cell! = dequeueReusableCell(withReuseIdentifier: Cell.reuseId, for: indexPath) as? Cell
+        cell.indexPath = indexPath
         configurationHandler?(cell)
         
         return cell
