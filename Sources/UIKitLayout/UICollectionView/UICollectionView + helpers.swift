@@ -11,12 +11,12 @@ extension UICollectionView {
     public func dequeueReusableCell<Cell>(
         _ type: Cell.Type,
         for indexPath: IndexPath,
-        configurationHandler: ((_ cell: Cell) -> Void)? = nil
+        configurationHandler: (_ cell: Cell) -> Void = {_ in}
     ) -> Cell where Cell: UICollectionViewCell, Cell: ReuseIdentifiable {
         
         let cell: Cell! = dequeueReusableCell(withReuseIdentifier: Cell.reuseId, for: indexPath) as? Cell
         cell.indexPath = indexPath
-        configurationHandler?(cell)
+        configurationHandler(cell)
         
         return cell
     }
