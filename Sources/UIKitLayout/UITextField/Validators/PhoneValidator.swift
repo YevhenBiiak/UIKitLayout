@@ -6,27 +6,27 @@
 
 import UIKit
 
-open class PhoneValidator: TextFieldValidator {
+internal class PhoneValidator: TextFieldValidator {
     
-    public var allowEmpty: Bool
+    private var allowEmpty: Bool
     
     public override var keyboardType: UIKeyboardType {
         .phonePad
     }
     
-    init(error: String, allowEmpty: Bool) {
+    public init(error: String, allowEmpty: Bool = false) {
         self.allowEmpty = allowEmpty
         super.init(error: error)
     }
     
-    open override func validate(_ string: String?) -> Bool {
+    open override func isValid(_ string: String?) -> Bool {
         if let string, !string.isEmpty {
             let isValid = string.validPhoneNumber
             isValid ? successHandler?() : failureHandler?()
             return isValid
         } else {
             allowEmpty ? successHandler?() : failureHandler?()
-            return allowEmpty ? true : false
+            return allowEmpty
         }
     }
 }

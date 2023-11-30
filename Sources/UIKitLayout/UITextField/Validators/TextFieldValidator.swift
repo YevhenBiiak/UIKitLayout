@@ -15,22 +15,21 @@ open class TextFieldValidator {
     internal var successHandler: (() -> Void)?
     internal var failureHandler: (() -> Void)?
     
-    init(error: String) {
+    public init(error: String) {
         self.error = error
     }
     
+    open func isValid(_ string: String?) -> Bool {
+        return true
+    }
+    
     @discardableResult
-    public func isValid() -> Bool {
+    public func validate() -> Bool {
         if let validation {
             return validation(self)
         } else {
             return true
         }
-    }
-    
-    @discardableResult
-    open func validate(_ string: String?) -> Bool {
-        return true
     }
     
     internal func setup(_ validation: ((TextFieldValidator) -> Bool)?, onSuccess: (() -> Void)?, onFailure: (() -> Void)?) {

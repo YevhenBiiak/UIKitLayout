@@ -24,4 +24,16 @@ extension UITableView {
     public func diffableDataSource<S: Hashable, I: Hashable>(cellProvider: @escaping (UITableView, IndexPath, I) -> UITableViewCell?) ->  UITableViewDiffableDataSource<S,I> {
         return UITableViewDiffableDataSource<S,I>(tableView: self, cellProvider: cellProvider)
     }
+    
+    public func diffableDataSource<Cell, S: Hashable, I: Hashable>(
+        using cell: Cell.Type,
+        handler: @escaping (_ cell: Cell, _ indexPath: IndexPath, _ item: I) -> Void
+    ) -> UITableViewDiffableDataSource<S,I> where Cell: UITableViewCell, Cell: ReuseIdentifiable {
+        
+        diffableDataSource { (tableView, indexPath, item) in
+            tableView.dequeueReusableCell(Cell.self, for: indexPath) { cell in
+                handler(cell, indexPath, item)
+            }
+        }
+    }
 }

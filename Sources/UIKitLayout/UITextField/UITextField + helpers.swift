@@ -19,7 +19,7 @@ extension UITextField {
             .publisher(for: Notification.Name("UITextField.allEditingEvents"), object: self)
             .compactMap { sender in
                 if let textField = sender.object as? UITextField {
-                    textField.validator?.validate(textField.text)
+                    textField.validator?.validate()
                     return textField.text ?? ""
                 } else {
                     return nil
@@ -41,8 +41,8 @@ extension TextFieldValidator {
     public static func empty(error: String) -> TextFieldValidator {
         EmptyValidator(error: error)
     }
-    public static func double(error: String) -> TextFieldValidator {
-        DoubleValidator(error: error)
+    public static func double(error: String, allowEmpty: Bool = false) -> TextFieldValidator {
+        DoubleValidator(error: error, allowEmpty: allowEmpty)
     }
     public static func email(error: String, allowEmpty: Bool = false) -> TextFieldValidator {
         EmailValidator(error: error, allowEmpty: allowEmpty)

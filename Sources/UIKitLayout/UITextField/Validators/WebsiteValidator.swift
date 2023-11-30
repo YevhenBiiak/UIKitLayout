@@ -6,20 +6,20 @@
 
 import UIKit
 
-open class WebsiteValidator: TextFieldValidator {
+internal class WebsiteValidator: TextFieldValidator {
     
-    public var allowEmpty: Bool
+    private var allowEmpty: Bool
     
     public override var keyboardType: UIKeyboardType {
-        return .URL
+        .URL
     }
     
-    init(error: String, allowEmpty: Bool) {
+    public init(error: String, allowEmpty: Bool = false) {
         self.allowEmpty = allowEmpty
         super.init(error: error)
     }
     
-    open override func validate(_ string: String?) -> Bool {
+    open override func isValid(_ string: String?) -> Bool {
         if let string, !string.isEmpty {
             let pattern = "^(https?://)?(www\\.)?([-a-zA-Z0-9]{1,63}\\.)*?[a-zA-Z0-9][-a-zA-Z0-9]{0,61}[a-zA-Z0-9]\\.[a-zA-Z]{2,6}(/[-\\w@\\+\\.~#\\?&/=%]*)?$"
             let test = NSPredicate(format: "SELF MATCHES %@", pattern)
@@ -28,7 +28,7 @@ open class WebsiteValidator: TextFieldValidator {
             return isValid
         } else {
             allowEmpty ? successHandler?() : failureHandler?()
-            return allowEmpty ? true : false
+            return allowEmpty
         }
     }
 }

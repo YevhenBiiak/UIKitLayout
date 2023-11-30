@@ -6,20 +6,20 @@
 
 import UIKit
 
-open class EmailValidator: TextFieldValidator {
+internal class EmailValidator: TextFieldValidator {
     
-    public var allowEmpty: Bool
+    private var allowEmpty: Bool
     
     public override var keyboardType: UIKeyboardType {
-        return .emailAddress
+        .emailAddress
     }
     
-    init(error: String, allowEmpty: Bool) {
+    public init(error: String, allowEmpty: Bool = false) {
         self.allowEmpty = allowEmpty
         super.init(error: error)
     }
     
-    open override func validate(_ string: String?) -> Bool {
+    open override func isValid(_ string: String?) -> Bool {
         if let string, !string.isEmpty {
             let pattern = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"
             let test = NSPredicate(format: "SELF MATCHES %@", pattern)
@@ -28,7 +28,7 @@ open class EmailValidator: TextFieldValidator {
             return isValid
         } else {
             allowEmpty ? successHandler?() : failureHandler?()
-            return allowEmpty ? true : false
+            return allowEmpty
         }
     }
 }

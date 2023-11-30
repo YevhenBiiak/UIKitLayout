@@ -22,8 +22,8 @@ extension UITextField {
         self.keyboardType = validator.keyboardType
         self.errorLabel?.text = validator.error
         
-        self.validator?.setup { [weak self] validator in
-            validator.validate(self?.text)
+        validator.setup { [weak self] validator in
+            validator.isValid(self?.text)
         } onSuccess: { [weak self] in
             self?.hideErrorLabel()
         } onFailure: { [weak self] in

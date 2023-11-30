@@ -6,19 +6,31 @@
 
 import UIKit
 
-open class DoubleValidator: TextFieldValidator {
+internal class DoubleValidator: TextFieldValidator {
+    
+    private var allowEmpty: Bool
     
     public override var keyboardType: UIKeyboardType {
-        return .numbersAndPunctuation
+        .numbersAndPunctuation
     }
     
-    open override func validate(_ string: String?) -> Bool {
-        if let string, let _ = Double(string) {
-            successHandler?()
-            return true
+    public init(error: String, allowEmpty: Bool = false) {
+        self.allowEmpty = allowEmpty
+        super.init(error: error)
+    }
+    
+    open override func isValid(_ string: String?) -> Bool {
+        if let string, !string.isEmpty {
+            if let _ = Double(string) {
+                successHandler?()
+                return true
+            } else {
+                failureHandler?()
+                return false
+            }
         } else {
-            failureHandler?()
-            return false
+            allowEmpty ? successHandler?() : failureHandler?()
+            return allowEmpty
         }
     }
 }
