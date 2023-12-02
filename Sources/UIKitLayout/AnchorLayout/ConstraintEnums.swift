@@ -7,32 +7,29 @@
 import UIKit
 
 public enum DimensionAttribute {
-    case width, height
+    case width, height, aspectRatio
     internal var nsAttribute: NSLayoutConstraint.Attribute {
         switch self {
-        case .width:  return .width
-        case .height: return .height }
+        case .width:       .width
+        case .height:      .height
+        case .aspectRatio: .notAnAttribute }
     }
 }
 
-public enum DimensionRelation {
-    case itSelf
-    case superview
-    case subviews
-}
-
-public enum EdgeAttribute {
-    case top, leading, trailing, bottom
+public enum ConstraintAttribute {
+    case top, leading, trailing, bottom, width, height
     internal var nsAttribute: NSLayoutConstraint.Attribute {
         switch self {
-        case .top:      return .top
-        case .leading:  return .leading
-        case .trailing: return .trailing
-        case .bottom:   return .bottom }
+        case .top:      .top
+        case .leading:  .leading
+        case .trailing: .trailing
+        case .bottom:   .bottom
+        case .width:    .width
+        case .height:   .height }
     }
 }
 
-public enum EdgeRelation {
+public enum ConstraintRelation {
     case superview
     case subviews
 }

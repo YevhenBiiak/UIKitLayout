@@ -44,8 +44,7 @@ extension UIView {
     
     @discardableResult
     public func frame(width: CGFloat, height: CGFloat) -> Self {
-        removeConstraints(.width)
-        removeConstraints(.height)
+        removeConstraints([.width, .height])
         translatesAutoresizingMaskIntoConstraints = false
         widthAnchor == width
         heightAnchor == height
@@ -54,7 +53,7 @@ extension UIView {
     
     @discardableResult
     public func frame(aspectRatio: CGFloat) -> Self {
-        removeConstraints(.width, to: .itSelf)
+        removeConstraints(.aspectRatio)
         widthAnchor == heightAnchor * aspectRatio
         return self
     }
@@ -88,8 +87,7 @@ extension UIView {
     @discardableResult
     public func frame(width: PostfixPercentage, height: PostfixPercentage) -> Self {
         if let superview {
-            removeConstraints(.width, to: .superview)
-            removeConstraints(.height, to: .superview)
+            removeConstraints([.width, .height], to: .superview)
             translatesAutoresizingMaskIntoConstraints = false
             widthAnchor == superview.widthAnchor * width.value
             heightAnchor == superview.heightAnchor * height.value
@@ -150,7 +148,7 @@ extension UIView {
     @discardableResult
     @available(*, deprecated, renamed: "frame(aspectRatio:)")
     public func aspectRatio(_ aspectRatio: CGFloat) -> Self {
-        removeConstraints(.width, to: .itSelf)
+        removeConstraints(.aspectRatio)
         widthAnchor == heightAnchor * aspectRatio
         return self
     }

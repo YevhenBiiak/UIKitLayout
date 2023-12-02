@@ -25,25 +25,27 @@ extension UIView {
     
     /// returns a constraints with a width or height attribute and a constant value
     public func constraints(_ attribute: DimensionAttribute) -> [NSLayoutConstraint] {
-        constraints.filter {
-            (($0.firstItem  as? NSObject) == self && $0.firstAttribute == attribute.nsAttribute) &&
-            ($0.secondItem == nil && $0.secondAttribute == .notAnAttribute)
+        switch attribute {
+        case .width, .height:
+            constraints.filter {
+                (($0.firstItem  as? NSObject) == self && $0.firstAttribute == attribute.nsAttribute) &&
+                ($0.secondItem == nil && $0.secondAttribute == .notAnAttribute)
+            }
+        case .aspectRatio:
+            constraints.filter {
+                (
+                    (($0.firstItem  as? NSObject) == self && $0.firstAttribute  == .width) &&
+                    (($0.secondItem as? NSObject) == self && $0.secondAttribute == .height)
+                ) || (
+                    (($0.firstItem  as? NSObject) == self && $0.firstAttribute  == .height) &&
+                    (($0.secondItem as? NSObject) == self && $0.secondAttribute == .width)
+                )
+            }
         }
     }
     
-    public func constraints(_ attribute: DimensionAttribute, to relation: DimensionRelation) -> [NSLayoutConstraint] {
+    public func constraints(_ attribute: ConstraintAttribute, to relation: ConstraintRelation) -> [NSLayoutConstraint] {
         switch relation {
-        case .itSelf:
-            let constraints = self.constraints
-            return constraints.filter {
-                (
-                    (($0.firstItem  as? NSObject) == self && $0.firstAttribute == attribute.nsAttribute) &&
-                    (($0.secondItem as? NSObject) == self)
-                ) || (
-                    (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute) &&
-                    (($0.firstItem  as? NSObject) == self)
-                )
-            }
         case .superview:
             let constraints = self.constraints + (superview?.constraints ?? [])
             return constraints.filter {
@@ -60,34 +62,6 @@ extension UIView {
             return constraints.filter {
                 (
                     (($0.firstItem  as? NSObject) == self && $0.firstAttribute == attribute.nsAttribute) &&
-                    subviews.contains(item: $0.secondItem)
-                ) || (
-                    (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute) &&
-                    subviews.contains(item: $0.firstItem)
-                )
-            }
-        }
-    }
-    
-    public func constraints(_ attribute: EdgeAttribute, to relation: EdgeRelation) -> [NSLayoutConstraint] {
-        
-        switch relation {
-        case .superview:
-            let constraints = self.constraints + (superview?.constraints ?? [])
-            return constraints.filter {
-                (
-                    (($0.firstItem  as? NSObject) == self && $0.firstAttribute  == attribute.nsAttribute) &&
-                    (($0.secondItem as? NSObject) == superview)
-                ) || (
-                    (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute) &&
-                    (($0.firstItem  as? NSObject) == superview)
-                )
-            }
-        case .subviews:
-            let constraints = self.constraints + subviews.flatMap(\.constraints)
-            return constraints.filter {
-                (
-                    (($0.firstItem  as? NSObject) == self && $0.firstAttribute  == attribute.nsAttribute) &&
                     subviews.contains(item: $0.secondItem)
                 ) || (
                     (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute) &&
@@ -111,6 +85,10 @@ extension UIView {
         !constraints(.height).isEmpty
     }
     
+    internal var hasAspectRatio: Bool {
+        !constraints(.aspectRatio).isEmpty
+    }
+    
     // MARK: DimensionAttribute
     
     internal func removeConstraints(_ attribute: DimensionAttribute) {
@@ -121,23 +99,13 @@ extension UIView {
         attributes.forEach { removeConstraints($0) }
     }
     
-    // MARK: DimensionAttribute and relation
+    // MARK: ConstraintAttribute and relation
     
-    internal func removeConstraints(_ attribute: DimensionAttribute, to relation: DimensionRelation) {
+    internal func removeConstraints(_ attribute: ConstraintAttribute, to relation: ConstraintRelation) {
         constraints(attribute, to: relation).forEach { $0.remove() }
     }
     
-    internal func removeConstraints(_ attributes: [DimensionAttribute], to relation: DimensionRelation) {
-        attributes.forEach { removeConstraints($0, to: relation) }
-    }
-    
-    // MARK: EdgeAttribute and relation
-    
-    internal func removeConstraints(_ attribute: EdgeAttribute, to relation: EdgeRelation) {
-        constraints(attribute, to: relation).forEach { $0.remove() }
-    }
-    
-    internal func removeConstraints(_ attributes: [EdgeAttribute], to relation: EdgeRelation) {
+    internal func removeConstraints(_ attributes: [ConstraintAttribute], to relation: ConstraintRelation) {
         attributes.forEach { removeConstraints($0, to: relation) }
     }
 }
