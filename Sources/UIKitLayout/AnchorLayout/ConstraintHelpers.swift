@@ -17,105 +17,144 @@ extension UIView {
         insertSubview(view, at: index)
         view.translatesAutoresizingMaskIntoConstraints = tamic
     }
+}
+
+// MARK: Getting Constraints methods
+
+extension UIView {
     
-    public var hasWidthConstraint: Bool {
-        !constraints(.width).isEmpty
-    }
-    
-    public var hasHeightConstraint: Bool {
-        !constraints(.height).isEmpty
-    }
-    
+    /// returns a constraints with a width or height attribute and a constant value
     public func constraints(_ attribute: DimensionAttribute) -> [NSLayoutConstraint] {
         constraints.filter {
-            ($0.firstItem  as? NSObject) == self && $0.firstAttribute == attribute.nsAttribute
+            (($0.firstItem  as? NSObject) == self && $0.firstAttribute == attribute.nsAttribute) &&
+            ($0.secondItem == nil && $0.secondAttribute == .notAnAttribute)
         }
     }
     
-    public func constraints(_ attribute: DimensionAttribute, relativeTo relation: ConstraintRelation) -> [NSLayoutConstraint] {
+    public func constraints(_ attribute: DimensionAttribute, to relation: DimensionRelation) -> [NSLayoutConstraint] {
         switch relation {
-        case .superview:
-            let constraints = Set(self.constraints + (superview?.constraints ?? []))
+        case .itSelf:
+            let constraints = self.constraints
             return constraints.filter {
                 (
-                    (($0.firstItem  as? NSObject) == self      && $0.firstAttribute  == attribute.nsAttribute) &&
-                    (($0.secondItem as? NSObject) == superview && $0.secondAttribute == attribute.nsAttribute)
+                    (($0.firstItem  as? NSObject) == self && $0.firstAttribute == attribute.nsAttribute) &&
+                    (($0.secondItem as? NSObject) == self)
                 ) || (
-                    (($0.firstItem  as? NSObject) == superview && $0.firstAttribute  == attribute.nsAttribute) &&
-                    (($0.secondItem as? NSObject) == self      && $0.secondAttribute == attribute.nsAttribute)
+                    (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute) &&
+                    (($0.firstItem  as? NSObject) == self)
+                )
+            }
+        case .superview:
+            let constraints = self.constraints + (superview?.constraints ?? [])
+            return constraints.filter {
+                (
+                    (($0.firstItem  as? NSObject) == self && $0.firstAttribute == attribute.nsAttribute) &&
+                    (($0.secondItem as? NSObject) == superview)
+                ) || (
+                    (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute) &&
+                    (($0.firstItem  as? NSObject) == superview)
                 )
             }
         case .subviews:
-            let constraints = self.constraints.filter {
-                (($0.firstItem  as? NSObject) == self && $0.firstAttribute  == attribute.nsAttribute) ||
-                (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute)
-            }
+            let constraints = self.constraints + subviews.flatMap(\.constraints)
             return constraints.filter {
-                for subview in subviews {
-                    if (($0.firstItem  as? NSObject) == subview && $0.firstAttribute  == attribute.nsAttribute) ||
-                       (($0.secondItem as? NSObject) == subview && $0.secondAttribute == attribute.nsAttribute) {
-                        return true
-                    }
-                }
-                return false
+                (
+                    (($0.firstItem  as? NSObject) == self && $0.firstAttribute == attribute.nsAttribute) &&
+                    subviews.contains(item: $0.secondItem)
+                ) || (
+                    (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute) &&
+                    subviews.contains(item: $0.firstItem)
+                )
             }
         }
     }
     
-    public func constraints(_ attribute: EdgeAttribute, to relation: ConstraintRelation) -> [NSLayoutConstraint] {
-        
-        let constraints = constraints.filter {
-            (($0.firstItem  as? NSObject) == self && $0.firstAttribute  == attribute.nsAttribute) ||
-            (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute)
-        }
+    public func constraints(_ attribute: EdgeAttribute, to relation: EdgeRelation) -> [NSLayoutConstraint] {
         
         switch relation {
         case .superview:
+            let constraints = self.constraints + (superview?.constraints ?? [])
             return constraints.filter {
-                ($0.firstItem  as? NSObject) == self.superview ||
-                ($0.secondItem as? NSObject) == self.superview
+                (
+                    (($0.firstItem  as? NSObject) == self && $0.firstAttribute  == attribute.nsAttribute) &&
+                    (($0.secondItem as? NSObject) == superview)
+                ) || (
+                    (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute) &&
+                    (($0.firstItem  as? NSObject) == superview)
+                )
             }
         case .subviews:
+            let constraints = self.constraints + subviews.flatMap(\.constraints)
             return constraints.filter {
-                for subview in subviews {
-                    if ($0.firstItem as? NSObject) == subview ||
-                        ($0.secondItem as? NSObject) == subview {
-                        return true
-                    }
-                }
-                return false
+                (
+                    (($0.firstItem  as? NSObject) == self && $0.firstAttribute  == attribute.nsAttribute) &&
+                    subviews.contains(item: $0.secondItem)
+                ) || (
+                    (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute) &&
+                    subviews.contains(item: $0.firstItem)
+                )
             }
         }
     }
+}
+
+
+// MARK: Removing Constraint methods
+
+extension UIView {
     
-    public func removeConstraints(_ attributes: [EdgeAttribute], to relation: ConstraintRelation) {
-        attributes.forEach { attribute in
-            constraints(attribute, to: relation).forEach { constraint in
-                removeConstraint(constraint)
-            }
-        }
+    internal var hasConstantWidth: Bool {
+        !constraints(.width).isEmpty
     }
     
-    public func removeConstraints(_ attributes: [DimensionAttribute]) {
-        attributes.forEach { attribute in
-            constraints(attribute).forEach { constraint in
-                removeConstraint(constraint)
-            }
-        }
+    internal var hasConstantHeight: Bool {
+        !constraints(.height).isEmpty
     }
     
-    public func removeConstraints(_ attribute: EdgeAttribute, to relation: ConstraintRelation) {
-        removeConstraints([attribute], to: relation)
+    // MARK: DimensionAttribute
+    
+    internal func removeConstraints(_ attribute: DimensionAttribute) {
+        constraints(attribute).forEach { $0.remove() }
     }
     
-    public func removeConstraints(_ attribute: DimensionAttribute) {
-        removeConstraints([attribute])
+    internal func removeConstraints(_ attributes: [DimensionAttribute]) {
+        attributes.forEach { removeConstraints($0) }
     }
     
-    public func removeConstraints(_ attribute: DimensionAttribute, relativeTo relation: ConstraintRelation) {
-        constraints(attribute, relativeTo: relation).forEach { constraint in
-            (constraint.firstItem as? UIView)?.removeConstraint(constraint)
-            (constraint.secondItem as? UIView)?.removeConstraint(constraint)
+    // MARK: DimensionAttribute and relation
+    
+    internal func removeConstraints(_ attribute: DimensionAttribute, to relation: DimensionRelation) {
+        constraints(attribute, to: relation).forEach { $0.remove() }
+    }
+    
+    internal func removeConstraints(_ attributes: [DimensionAttribute], to relation: DimensionRelation) {
+        attributes.forEach { removeConstraints($0, to: relation) }
+    }
+    
+    // MARK: EdgeAttribute and relation
+    
+    internal func removeConstraints(_ attribute: EdgeAttribute, to relation: EdgeRelation) {
+        constraints(attribute, to: relation).forEach { $0.remove() }
+    }
+    
+    internal func removeConstraints(_ attributes: [EdgeAttribute], to relation: EdgeRelation) {
+        attributes.forEach { removeConstraints($0, to: relation) }
+    }
+}
+
+extension NSLayoutConstraint {
+    public func remove() {
+        (firstItem  as? UIView)?.removeConstraint(self)
+        (secondItem as? UIView)?.removeConstraint(self)
+    }
+}
+
+private extension Array<UIView> {
+    func contains(item: Any?) -> Bool {
+        if let obj = item as? UIView {
+            contains(obj)
+        } else {
+            false
         }
     }
 }

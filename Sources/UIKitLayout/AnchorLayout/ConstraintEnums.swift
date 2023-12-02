@@ -6,10 +6,6 @@
 
 import UIKit
 
-public enum ConstraintRelation {
-    case superview, subviews
-}
-
 public enum DimensionAttribute {
     case width, height
     internal var nsAttribute: NSLayoutConstraint.Attribute {
@@ -17,6 +13,12 @@ public enum DimensionAttribute {
         case .width:  return .width
         case .height: return .height }
     }
+}
+
+public enum DimensionRelation {
+    case itSelf
+    case superview
+    case subviews
 }
 
 public enum EdgeAttribute {
@@ -28,4 +30,9 @@ public enum EdgeAttribute {
         case .trailing: return .trailing
         case .bottom:   return .bottom }
     }
+}
+
+public enum EdgeRelation {
+    case superview
+    case subviews
 }

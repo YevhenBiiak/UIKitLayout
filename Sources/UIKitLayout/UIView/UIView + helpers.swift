@@ -72,14 +72,14 @@ extension UIView {
         // MARK: Filling cases
         
         case .fill:
-            if hasWidthConstraint || widthPercentage != nil {
+            if hasConstantWidth || widthPercentage != nil {
                 return alignInSuperview(.fillVerticaly) }
-            if hasHeightConstraint || heightPercentage != nil {
+            if hasConstantHeight || heightPercentage != nil {
                 return alignInSuperview(.fillHorizontaly)
             }
             edgeAnchors == superview.edgeAnchors
         case .fillVerticaly:
-            if hasHeightConstraint || heightPercentage != nil {
+            if hasConstantHeight || heightPercentage != nil {
                 return alignInSuperview(.center)
             }
             topAnchor      == superview.topAnchor
@@ -88,7 +88,7 @@ extension UIView {
             bottomAnchor   == superview.bottomAnchor
             centerXAnchor  == superview.centerXAnchor
         case .fillHorizontaly:
-            if hasWidthConstraint || widthPercentage != nil {
+            if hasConstantWidth || widthPercentage != nil {
                 return alignInSuperview(.center)
             }
             topAnchor      >= superview.topAnchor
@@ -97,7 +97,7 @@ extension UIView {
             bottomAnchor   <= superview.bottomAnchor
             centerYAnchor  == superview.centerYAnchor
         case .fillTop:
-            if hasWidthConstraint || widthPercentage != nil {
+            if hasConstantWidth || widthPercentage != nil {
                 return alignInSuperview(.top)
             }
             topAnchor      == superview.topAnchor
@@ -105,7 +105,7 @@ extension UIView {
             trailingAnchor == superview.trailingAnchor
             bottomAnchor   <= superview.bottomAnchor
         case .fillBottom:
-            if hasWidthConstraint || widthPercentage != nil {
+            if hasConstantWidth || widthPercentage != nil {
                 return alignInSuperview(.bottom)
             }
             topAnchor      >= superview.topAnchor
@@ -113,7 +113,7 @@ extension UIView {
             trailingAnchor == superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
         case .fillLeading:
-            if hasHeightConstraint || heightPercentage != nil {
+            if hasConstantHeight || heightPercentage != nil {
                 return alignInSuperview(.leading)
             }
             topAnchor      == superview.topAnchor
@@ -121,7 +121,7 @@ extension UIView {
             trailingAnchor <= superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
         case .fillTrailing:
-            if hasHeightConstraint || heightPercentage != nil {
+            if hasConstantHeight || heightPercentage != nil {
                 return alignInSuperview(.trailing)
             }
             topAnchor      == superview.topAnchor
