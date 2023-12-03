@@ -19,7 +19,6 @@ extension UITextField {
             .publisher(for: Notification.Name("UITextField.allEditingEvents"), object: self)
             .compactMap { sender in
                 if let textField = sender.object as? UITextField {
-                    textField.validator?.validate()
                     return textField.text ?? ""
                 } else {
                     return nil
@@ -38,19 +37,19 @@ extension UITextField {
 }
 
 extension TextFieldValidator {
-    public static func empty(error: String) -> TextFieldValidator {
-        EmptyValidator(error: error)
+    public static func empty() -> TextFieldValidator {
+        EmptyValidator()
     }
-    public static func double(error: String, allowEmpty: Bool = false) -> TextFieldValidator {
-        DoubleValidator(error: error, allowEmpty: allowEmpty)
+    public static func double(allowEmpty: Bool = false) -> TextFieldValidator {
+        DoubleValidator(allowEmpty: allowEmpty)
     }
-    public static func email(error: String, allowEmpty: Bool = false) -> TextFieldValidator {
-        EmailValidator(error: error, allowEmpty: allowEmpty)
+    public static func email(allowEmpty: Bool = false) -> TextFieldValidator {
+        EmailValidator(allowEmpty: allowEmpty)
     }
-    public static func phone(error: String, allowEmpty: Bool = false) -> TextFieldValidator {
-        PhoneValidator(error: error, allowEmpty: allowEmpty)
+    public static func phone(allowEmpty: Bool = false) -> TextFieldValidator {
+        PhoneValidator(allowEmpty: allowEmpty)
     }
-    public static func website(error: String, allowEmpty: Bool = false) -> TextFieldValidator {
-        WebsiteValidator(error: error, allowEmpty: allowEmpty)
+    public static func website(allowEmpty: Bool = false) -> TextFieldValidator {
+        WebsiteValidator(allowEmpty: allowEmpty)
     }
 }

@@ -14,18 +14,16 @@ internal class PhoneValidator: TextFieldValidator {
         .phonePad
     }
     
-    public init(error: String, allowEmpty: Bool = false) {
+    public init(allowEmpty: Bool = false) {
         self.allowEmpty = allowEmpty
-        super.init(error: error)
+        super.init()
     }
     
-    open override func isValid(_ string: String?) -> Bool {
+    open override func validate(_ string: String?) -> Bool {
         if let string, !string.isEmpty {
             let isValid = string.validPhoneNumber
-            isValid ? successHandler?() : failureHandler?()
             return isValid
         } else {
-            allowEmpty ? successHandler?() : failureHandler?()
             return allowEmpty
         }
     }

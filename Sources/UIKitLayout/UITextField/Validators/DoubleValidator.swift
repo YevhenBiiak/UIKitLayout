@@ -14,22 +14,19 @@ internal class DoubleValidator: TextFieldValidator {
         .numbersAndPunctuation
     }
     
-    public init(error: String, allowEmpty: Bool = false) {
+    public init(allowEmpty: Bool = false) {
         self.allowEmpty = allowEmpty
-        super.init(error: error)
+        super.init()
     }
     
-    open override func isValid(_ string: String?) -> Bool {
+    open override func validate(_ string: String?) -> Bool {
         if let string, !string.isEmpty {
             if let _ = Double(string) {
-                successHandler?()
                 return true
             } else {
-                failureHandler?()
                 return false
             }
         } else {
-            allowEmpty ? successHandler?() : failureHandler?()
             return allowEmpty
         }
     }

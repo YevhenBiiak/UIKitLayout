@@ -17,19 +17,10 @@ extension UITextField {
     
     @discardableResult
     public func validator(_ validator: TextFieldValidator) -> Self {
-        self.addErrorLabel()
         self.validator = validator
         self.keyboardType = validator.keyboardType
-        self.errorLabel?.text = validator.error
-        
-        validator.setup { [weak self] validator in
-            validator.isValid(self?.text)
-        } onSuccess: { [weak self] in
-            self?.hideErrorLabel()
-        } onFailure: { [weak self] in
-            self?.showErrorLabel()
-        }
-        
+        validator.setup(with: self)
+        addTarget(self, action: #selector(validationEventReceived), for: [.editingChanged, .editingDidEnd, .editingDidEndOnExit])
         return self
     }
     
@@ -63,26 +54,17 @@ extension UITextField {
         self.font = font
         return self
     }
+    
+    @discardableResult
+    public func keyboardType(_ type: UIKeyboardType) -> Self {
+        self.keyboardType = type
+        return self
+    }
 }
 
-private extension UITextField {
-    
-    func addErrorLabel() {
-        errorLabel = UILabel()
-        errorLabel!.font = .systemFont(ofSize: 12)
-        errorLabel!.textColor = .systemRed
-        
-        addSubview(errorLabel!, tamic: false)
-        errorLabel!.topAnchor == bottomAnchor
-        errorLabel!.leadingAnchor == leadingAnchor
-        errorLabel!.trailingAnchor == trailingAnchor
-    }
-    
-    func showErrorLabel() {
-        errorLabel?.isHidden = false
-    }
-    
-    func hideErrorLabel() {
-        errorLabel?.isHidden = true
+extension UITextField {
+    @objc private func validationEventReceived() {
+        guard let validator else { return }
+        validationStatusHandler?(validator)
     }
 }

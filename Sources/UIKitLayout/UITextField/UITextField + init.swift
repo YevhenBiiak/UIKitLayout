@@ -11,9 +11,9 @@ extension UITextField {
     
     private struct AssociatedKeys {
         // public
-        static var validator = "validator"
-        static var editingEventsActionAdded = "editingEventsActionAdded"
-        static var errorLabel = "errorLabel"
+        static var validator = "_validator"
+        static var editingEventsActionAdded = "_editingEventsActionAdded"
+        static var validationStatusHandler = "_validationStatusHandler"
         // private
     }
     
@@ -27,12 +27,10 @@ extension UITextField {
         set { setAssociatedObject(key: &AssociatedKeys.validator, value: newValue) }
     }
     
-    public var errorLabel: UILabel? {
-        get { getAssociatedObject(key: &AssociatedKeys.errorLabel) }
-        set {
-            errorLabel?.removeFromSuperview()
-            setAssociatedObject(key: &AssociatedKeys.errorLabel, value: newValue)
-        }
+    /// called when one of editing event recieved
+    public var validationStatusHandler: ((_ validator: TextFieldValidator) -> Void)? {
+        get { getAssociatedObject(key: &AssociatedKeys.validationStatusHandler) }
+        set { setAssociatedObject(key: &AssociatedKeys.validationStatusHandler, value: newValue) }
     }
     
     public convenience init(text: String) {
@@ -59,7 +57,6 @@ extension UITextField {
         publisher.sink { [weak self] text in
             if self?.text != text {
                 self?.text = text
-                self?.validator?.validate()
             }
         }.store(in: self)
     }

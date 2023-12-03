@@ -8,23 +8,11 @@ import UIKit
 
 open class TextFieldValidator {
     
-    public var error: String
     public var keyboardType: UIKeyboardType { .default }
     
-    internal var validation: ((TextFieldValidator) -> Bool)?
-    internal var successHandler: (() -> Void)?
-    internal var failureHandler: (() -> Void)?
+    private var validation: ((TextFieldValidator) -> Bool)?
     
-    public init(error: String) {
-        self.error = error
-    }
-    
-    open func isValid(_ string: String?) -> Bool {
-        return true
-    }
-    
-    @discardableResult
-    public func validate() -> Bool {
+    public var isValid: Bool {
         if let validation {
             return validation(self)
         } else {
@@ -32,9 +20,13 @@ open class TextFieldValidator {
         }
     }
     
-    internal func setup(_ validation: ((TextFieldValidator) -> Bool)?, onSuccess: (() -> Void)?, onFailure: (() -> Void)?) {
-        self.validation = validation
-        self.successHandler = onSuccess
-        self.failureHandler = onFailure
+    open func validate(_ string: String?) -> Bool {
+        return true
+    }
+    
+    internal func setup(with textField: UITextField) {
+        validation = { [weak textField] validator in
+            validator.validate(textField?.text)
+        }
     }
 }

@@ -14,20 +14,18 @@ internal class EmailValidator: TextFieldValidator {
         .emailAddress
     }
     
-    public init(error: String, allowEmpty: Bool = false) {
+    public init(allowEmpty: Bool = false) {
         self.allowEmpty = allowEmpty
-        super.init(error: error)
+        super.init()
     }
     
-    open override func isValid(_ string: String?) -> Bool {
+    open override func validate(_ string: String?) -> Bool {
         if let string, !string.isEmpty {
             let pattern = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"
             let test = NSPredicate(format: "SELF MATCHES %@", pattern)
             let isValid = test.evaluate(with: string)
-            isValid ? successHandler?() : failureHandler?()
             return isValid
         } else {
-            allowEmpty ? successHandler?() : failureHandler?()
             return allowEmpty
         }
     }
