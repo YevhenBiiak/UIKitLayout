@@ -6,18 +6,24 @@
 
 import UIKit
 
-public enum DimensionAttribute {
-    case width, height, aspectRatio
+public enum ConstraintAttribute {
+    case top, leading, trailing, bottom, width, height, aspectRatio
+    
     internal var nsAttribute: NSLayoutConstraint.Attribute {
         switch self {
+        case .top:         .top
+        case .leading:     .leading
+        case .trailing:    .trailing
+        case .bottom:      .bottom
         case .width:       .width
         case .height:      .height
         case .aspectRatio: .notAnAttribute }
     }
 }
 
-public enum ConstraintAttribute {
+public enum ConstraintRelatedAttribute {
     case top, leading, trailing, bottom, width, height
+    
     internal var nsAttribute: NSLayoutConstraint.Attribute {
         switch self {
         case .top:      .top

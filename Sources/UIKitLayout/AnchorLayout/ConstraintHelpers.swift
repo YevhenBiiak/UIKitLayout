@@ -24,8 +24,18 @@ extension UIView {
 extension UIView {
     
     /// returns a constraints with a width or height attribute and a constant value
-    public func constraints(_ attribute: DimensionAttribute) -> [NSLayoutConstraint] {
+    public func constraints(_ attribute: ConstraintAttribute) -> [NSLayoutConstraint] {
         switch attribute {
+        case .top, .bottom, .leading, .trailing:
+            (constraints + (superview?.constraints ?? [])).filter {
+                (
+                    (($0.firstItem  as? NSObject) == self && $0.firstAttribute == attribute.nsAttribute) &&
+                    (($0.secondItem as? NSObject) == superview)
+                ) || (
+                    (($0.secondItem as? NSObject) == self && $0.secondAttribute == attribute.nsAttribute) &&
+                    (($0.firstItem  as? NSObject) == superview)
+                )
+            }
         case .width, .height:
             constraints.filter {
                 (($0.firstItem  as? NSObject) == self && $0.firstAttribute == attribute.nsAttribute) &&
@@ -44,7 +54,7 @@ extension UIView {
         }
     }
     
-    public func constraints(_ attribute: ConstraintAttribute, to relation: ConstraintRelation) -> [NSLayoutConstraint] {
+    public func constraints(_ attribute: ConstraintRelatedAttribute, to relation: ConstraintRelation) -> [NSLayoutConstraint] {
         switch relation {
         case .superview:
             let constraints = self.constraints + (superview?.constraints ?? [])
@@ -91,21 +101,21 @@ extension UIView {
     
     // MARK: DimensionAttribute
     
-    internal func removeConstraints(_ attribute: DimensionAttribute) {
+    internal func removeConstraints(_ attribute: ConstraintAttribute) {
         constraints(attribute).forEach { $0.remove() }
     }
     
-    internal func removeConstraints(_ attributes: [DimensionAttribute]) {
+    internal func removeConstraints(_ attributes: [ConstraintAttribute]) {
         attributes.forEach { removeConstraints($0) }
     }
     
     // MARK: ConstraintAttribute and relation
     
-    internal func removeConstraints(_ attribute: ConstraintAttribute, to relation: ConstraintRelation) {
+    internal func removeConstraints(_ attribute: ConstraintRelatedAttribute, to relation: ConstraintRelation) {
         constraints(attribute, to: relation).forEach { $0.remove() }
     }
     
-    internal func removeConstraints(_ attributes: [ConstraintAttribute], to relation: ConstraintRelation) {
+    internal func removeConstraints(_ attributes: [ConstraintRelatedAttribute], to relation: ConstraintRelation) {
         attributes.forEach { removeConstraints($0, to: relation) }
     }
 }
