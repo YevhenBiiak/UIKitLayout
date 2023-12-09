@@ -65,6 +65,6 @@ extension UITextField {
 extension UITextField {
     @objc private func validationEventReceived() {
         guard let validator else { return }
-        validationStatusHandler?(validator)
+        validationUpdateHandler?(validator)
     }
 }

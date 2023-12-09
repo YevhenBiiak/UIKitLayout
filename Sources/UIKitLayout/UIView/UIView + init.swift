@@ -21,12 +21,12 @@ extension UIViewContainerable {
 extension UIView {
     
     private struct AssociatedKeys {
-        static var longPressAction = "_longPressActions_"
-        static var tapGestureAction = "_tapGestureActions_"
-        static var longPressHandler = "_longPressHandlers_"
+        static var longPressAction   = "_longPressActions_"
+        static var tapGestureAction  = "_tapGestureActions_"
+        static var longPressHandler  = "_longPressHandlers_"
         static var tapGestureHandler = "_tapGestureHandlers_"
-        static var widthPercentage = "_widthPercentage_"
-        static var heightPercentage = "_heightPercentage_"
+        static var widthPercentage   = "_widthPercentage_"
+        static var heightPercentage  = "_heightPercentage_"
     }
     
     internal var longPressActions: [(() -> Void)] {

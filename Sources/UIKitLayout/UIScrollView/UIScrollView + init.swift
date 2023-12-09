@@ -15,11 +15,26 @@ extension UIScrollViewInitializable {
         self.init(frame: .zero)
         let view = content()
         self.addSubview(view, tamic: false)
+        
         view.edgeAnchors == self.edgeAnchors
         if axis == .horizontal {
-            view.heightAnchor == self.frameLayoutGuide.heightAnchor
+            if let widthMultiplier = view.widthPercentage?.value {
+                view.widthAnchor == self.widthAnchor * widthMultiplier
+            }
+            if let heightMultiplier = view.heightPercentage?.value {
+                view.heightAnchor == self.heightAnchor * heightMultiplier
+            } else if !view.hasHeight {
+                view.heightAnchor == self.frameLayoutGuide.heightAnchor
+            }
         } else {
-            view.widthAnchor == self.frameLayoutGuide.widthAnchor
+            if let heightMultiplier = view.heightPercentage?.value {
+                view.heightAnchor == self.heightAnchor * heightMultiplier
+            }
+            if let widthMultiplier = view.widthPercentage?.value {
+                view.widthAnchor == self.widthAnchor * widthMultiplier
+            } else if !view.hasWidth {
+                view.widthAnchor == self.frameLayoutGuide.widthAnchor
+            }
         }
     }
 }

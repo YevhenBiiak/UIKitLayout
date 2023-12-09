@@ -62,180 +62,321 @@ extension UIView {
         }
         return views
     }
+}
+
+internal class PaddingView: UIView {}
+
+extension UIView {
+    
+    internal var hasWidth: Bool {
+        if hasConstantWidth || widthPercentage != nil {
+            true
+        } else if let pv = self as? PaddingView, pv.subviews.count == 1 {
+            subviews.first?.hasWidth == true
+        } else {
+            false
+        }
+    }
+    internal var hasHeight: Bool {
+        if hasConstantHeight || heightPercentage != nil {
+            true
+        } else if let pv = self as? PaddingView, pv.subviews.count == 1 {
+            subviews.first?.hasHeight == true
+        } else {
+            false
+        }
+    }
     
     internal func alignInSuperview(_ alignment: ViewAlignment) {
         guard let superview else { return }
         translatesAutoresizingMaskIntoConstraints = false
+        var guide = UILayoutGuide()
+        
+        var cantFillHorizontally: Bool {
+            hasWidth && (superview.hasWidth || superview.isRootView)
+        }
+        var cantFillVertically: Bool {
+            hasHeight && (superview.hasHeight || superview.isRootView)
+        }
         
         switch alignment {
         
         // MARK: Filling cases
         
         case .fill:
-            if hasConstantWidth || widthPercentage != nil {
-                return alignInSuperview(.fillVerticaly) }
-            if hasConstantHeight || heightPercentage != nil {
-                return alignInSuperview(.fillHorizontaly)
-            }
+            if cantFillHorizontally { return alignInSuperview(.fillVerticaly) }
+            if cantFillVertically   { return alignInSuperview(.fillHorizontaly) }
             edgeAnchors == superview.edgeAnchors
         case .fillVerticaly:
-            if hasConstantHeight || heightPercentage != nil {
-                return alignInSuperview(.center)
+            if cantFillVertically { return alignInSuperview(.center) }
+            if !hasWidth {
+                leadingAnchor  >= superview.leadingAnchor
+                trailingAnchor <= superview.trailingAnchor
             }
             topAnchor      == superview.topAnchor
-            leadingAnchor  >= superview.leadingAnchor
-            trailingAnchor <= superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
             centerXAnchor  == superview.centerXAnchor
         case .fillHorizontaly:
-            if hasConstantWidth || widthPercentage != nil {
-                return alignInSuperview(.center)
+            if cantFillHorizontally { return alignInSuperview(.center) }
+            if !hasHeight {
+                topAnchor    >= superview.topAnchor
+                bottomAnchor <= superview.bottomAnchor
             }
-            topAnchor      >= superview.topAnchor
             leadingAnchor  == superview.leadingAnchor
             trailingAnchor == superview.trailingAnchor
-            bottomAnchor   <= superview.bottomAnchor
             centerYAnchor  == superview.centerYAnchor
         case .fillTop:
-            if hasConstantWidth || widthPercentage != nil {
-                return alignInSuperview(.top)
+            if cantFillHorizontally { return alignInSuperview(.top) }
+            if !hasHeight {
+                bottomAnchor <= superview.bottomAnchor
             }
             topAnchor      == superview.topAnchor
             leadingAnchor  == superview.leadingAnchor
             trailingAnchor == superview.trailingAnchor
-            bottomAnchor   <= superview.bottomAnchor
         case .fillBottom:
-            if hasConstantWidth || widthPercentage != nil {
-                return alignInSuperview(.bottom)
+            if cantFillHorizontally { return alignInSuperview(.bottom) }
+            if !hasHeight {
+                topAnchor >= superview.topAnchor
             }
-            topAnchor      >= superview.topAnchor
             leadingAnchor  == superview.leadingAnchor
             trailingAnchor == superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
         case .fillLeading:
-            if hasConstantHeight || heightPercentage != nil {
-                return alignInSuperview(.leading)
+            if cantFillVertically { return alignInSuperview(.leading) }
+            if !hasWidth {
+                trailingAnchor <= superview.trailingAnchor
             }
-            topAnchor      == superview.topAnchor
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor <= superview.trailingAnchor
-            bottomAnchor   == superview.bottomAnchor
+            topAnchor     == superview.topAnchor
+            leadingAnchor == superview.leadingAnchor
+            bottomAnchor  == superview.bottomAnchor
         case .fillTrailing:
-            if hasConstantHeight || heightPercentage != nil {
-                return alignInSuperview(.trailing)
+            if cantFillVertically { return alignInSuperview(.trailing) }
+            if !hasWidth {
+                leadingAnchor <= superview.leadingAnchor
             }
             topAnchor      == superview.topAnchor
-            leadingAnchor  <= superview.leadingAnchor
             trailingAnchor == superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
+            
             
         // MARK: Corner cases
         
         case .topLeading:
-            topAnchor      == superview.topAnchor
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor <= superview.trailingAnchor
-            bottomAnchor   <= superview.bottomAnchor
+            if !hasWidth {
+                trailingAnchor <= superview.trailingAnchor
+            }
+            if !hasHeight {
+                bottomAnchor <= superview.bottomAnchor
+            }
+            topAnchor     == superview.topAnchor
+            leadingAnchor == superview.leadingAnchor
         case .topTrailing:
+            if !hasWidth {
+                leadingAnchor >= superview.leadingAnchor
+            }
+            if !hasHeight {
+                bottomAnchor <= superview.bottomAnchor
+            }
             topAnchor      == superview.topAnchor
-            leadingAnchor  >= superview.leadingAnchor
             trailingAnchor == superview.trailingAnchor
-            bottomAnchor   <= superview.bottomAnchor
         case .bottomLeading:
-            topAnchor      >= superview.topAnchor
+            if !hasWidth {
+                trailingAnchor <= superview.trailingAnchor
+            }
+            if !hasHeight {
+                topAnchor >= superview.topAnchor
+            }
             leadingAnchor  == superview.leadingAnchor
-            trailingAnchor <= superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
         case .bottomTrailing:
-            topAnchor      >= superview.topAnchor
-            leadingAnchor  >= superview.leadingAnchor
+            if !hasWidth {
+                leadingAnchor >= superview.leadingAnchor
+            }
+            if !hasHeight {
+                topAnchor >= superview.topAnchor
+            }
             trailingAnchor == superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
+            
             
         // MARK: Centering cases
         
         case .center:
-            topAnchor      >= superview.topAnchor
-            leadingAnchor  >= superview.leadingAnchor
-            trailingAnchor <= superview.trailingAnchor
-            bottomAnchor   <= superview.bottomAnchor
-            centerAnchor   == superview.centerAnchor
+            if !hasWidth {
+                leadingAnchor  >= superview.leadingAnchor
+                trailingAnchor <= superview.trailingAnchor
+            }
+            if !hasHeight {
+                topAnchor    >= superview.topAnchor
+                bottomAnchor <= superview.bottomAnchor
+            }
+            centerAnchor == superview.centerAnchor
         case .top:
-            topAnchor      == superview.topAnchor
-            leadingAnchor  >= superview.leadingAnchor
-            trailingAnchor <= superview.trailingAnchor
-            bottomAnchor   <= superview.bottomAnchor
-            centerXAnchor  == superview.centerXAnchor
+            if !hasWidth {
+                leadingAnchor  >= superview.leadingAnchor
+                trailingAnchor <= superview.trailingAnchor
+            }
+            if !hasHeight {
+                bottomAnchor <= superview.bottomAnchor
+            }
+            topAnchor     == superview.topAnchor
+            centerXAnchor == superview.centerXAnchor
         case .leading:
-            topAnchor      >= superview.topAnchor
+            if !hasWidth  {
+                trailingAnchor <= superview.trailingAnchor
+            }
+            if !hasHeight {
+                topAnchor    >= superview.topAnchor
+                bottomAnchor <= superview.bottomAnchor
+            }
             leadingAnchor  == superview.leadingAnchor
-            trailingAnchor <= superview.trailingAnchor
-            bottomAnchor   <= superview.bottomAnchor
             centerYAnchor  == superview.centerYAnchor
         case .trailing:
-            topAnchor      >= superview.topAnchor
-            leadingAnchor  >= superview.leadingAnchor
+            if !hasWidth {
+                leadingAnchor  >= superview.leadingAnchor
+            }
+            if !hasHeight {
+                topAnchor      >= superview.topAnchor
+                bottomAnchor   <= superview.bottomAnchor
+            }
             trailingAnchor == superview.trailingAnchor
-            bottomAnchor   <= superview.bottomAnchor
             centerYAnchor  == superview.centerYAnchor
         case .bottom:
-            topAnchor      >= superview.topAnchor
-            leadingAnchor  >= superview.leadingAnchor
-            trailingAnchor <= superview.trailingAnchor
-            bottomAnchor   == superview.bottomAnchor
-            centerXAnchor  == superview.centerXAnchor
+            if !hasWidth {
+                leadingAnchor  >= superview.leadingAnchor
+                trailingAnchor <= superview.trailingAnchor
+            }
+            if !hasHeight {
+                topAnchor >= superview.topAnchor
+            }
+            bottomAnchor  == superview.bottomAnchor
+            centerXAnchor == superview.centerXAnchor
             
         // MARK: Safe Area cases
         
         case .inSafeArea:
-            topAnchor      == superview.safeAreaLayoutGuide.topAnchor
-            leadingAnchor  == superview.safeAreaLayoutGuide.leadingAnchor
-            trailingAnchor == superview.safeAreaLayoutGuide.trailingAnchor
-            bottomAnchor   == superview.safeAreaLayoutGuide.bottomAnchor
+            guide = superview.safeAreaLayoutGuide
+            resolveFillingCase(using: guide)
         case .inSafeAreaIgnoringTop:
-            topAnchor      == superview.topAnchor
-            leadingAnchor  == superview.safeAreaLayoutGuide.leadingAnchor
-            trailingAnchor == superview.safeAreaLayoutGuide.trailingAnchor
-            bottomAnchor   == superview.safeAreaLayoutGuide.bottomAnchor
+            superview.addLayoutGuide(guide)
+            guide.topAnchor      == superview.topAnchor
+            guide.leadingAnchor  == superview.safeAreaLayoutGuide.leadingAnchor
+            guide.trailingAnchor == superview.safeAreaLayoutGuide.trailingAnchor
+            guide.bottomAnchor   == superview.safeAreaLayoutGuide.bottomAnchor
+            resolveFillingCase(using: guide)
         case .inSafeAreaIgnoringBottom:
-            topAnchor      == superview.safeAreaLayoutGuide.topAnchor
-            leadingAnchor  == superview.safeAreaLayoutGuide.leadingAnchor
-            trailingAnchor == superview.safeAreaLayoutGuide.trailingAnchor
-            bottomAnchor   == superview.bottomAnchor
+            superview.addLayoutGuide(guide)
+            guide.topAnchor      == superview.safeAreaLayoutGuide.topAnchor
+            guide.leadingAnchor  == superview.safeAreaLayoutGuide.leadingAnchor
+            guide.trailingAnchor == superview.safeAreaLayoutGuide.trailingAnchor
+            guide.bottomAnchor   == superview.bottomAnchor
+            resolveFillingCase(using: guide)
         case .aboveSafeArea:
-            topAnchor      == superview.topAnchor
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor == superview.trailingAnchor
-            bottomAnchor   == superview.safeAreaLayoutGuide.topAnchor
+            superview.addLayoutGuide(guide)
+            guide.topAnchor      == superview.topAnchor
+            guide.leadingAnchor  == superview.leadingAnchor
+            guide.trailingAnchor == superview.trailingAnchor
+            guide.bottomAnchor   == superview.safeAreaLayoutGuide.topAnchor
+            resolveFillingCase(using: guide)
         case .belowSafeArea:
-            topAnchor      == superview.safeAreaLayoutGuide.bottomAnchor
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor == superview.trailingAnchor
-            bottomAnchor   == superview.bottomAnchor
+            superview.addLayoutGuide(guide)
+            guide.topAnchor      == superview.safeAreaLayoutGuide.bottomAnchor
+            guide.leadingAnchor  == superview.leadingAnchor
+            guide.trailingAnchor == superview.trailingAnchor
+            guide.bottomAnchor   == superview.bottomAnchor
+            resolveFillingCase(using: guide)
         
         // MARK: AdditionalSafeAreaInsets cases
         
         case .topBar:
             layoutIfNeeded()
             controller?.additionalSafeAreaInsets.top = bounds.height
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor == superview.trailingAnchor
-            bottomAnchor   == superview.safeAreaLayoutGuide.topAnchor
+            if hasWidth {
+                centerXAnchor == superview.centerXAnchor
+            } else {
+                leadingAnchor  == superview.leadingAnchor
+                trailingAnchor == superview.trailingAnchor
+            }
+            bottomAnchor == superview.safeAreaLayoutGuide.topAnchor
         case .bottomBar:
             layoutIfNeeded()
             controller?.additionalSafeAreaInsets.bottom = bounds.height
-            topAnchor      == superview.safeAreaLayoutGuide.bottomAnchor
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor == superview.trailingAnchor
+            if hasWidth {
+                centerXAnchor == superview.centerXAnchor
+            } else {
+                leadingAnchor  == superview.leadingAnchor
+                trailingAnchor == superview.trailingAnchor
+            }
+            topAnchor == superview.safeAreaLayoutGuide.bottomAnchor
         }
         
-        // MARK: Set Width, Height precentage if any
+        // MARK: Set Width, Height percentage if any
         
         if let widthPercentage {
-            widthAnchor == superview.widthAnchor * widthPercentage.value
+            switch alignment {
+            case .inSafeArea, .inSafeAreaIgnoringTop, .inSafeAreaIgnoringBottom, .aboveSafeArea, .belowSafeArea:
+                widthAnchor == guide.widthAnchor * widthPercentage.value
+            default:
+                widthAnchor == superview.widthAnchor * widthPercentage.value
+            }
         }
         if let heightPercentage {
-            heightAnchor == superview.heightAnchor * heightPercentage.value
+            switch alignment {
+            case .inSafeArea, .inSafeAreaIgnoringTop, .inSafeAreaIgnoringBottom, .aboveSafeArea, .belowSafeArea:
+                heightAnchor == guide.heightAnchor * heightPercentage.value
+            case .topBar, .bottomBar:
+                break // Ignore!!! HeightPercentage cannot be set in this case (has self calculated height for additionalSafeAreaInsets)
+            default:
+                heightAnchor == superview.heightAnchor * heightPercentage.value
+            }
+        }
+        
+        // MARK: Resolve InSaveArea Case
+        
+        func resolveFillingCase(using guide: UILayoutGuide) {
+            if hasWidth  { return fillVerticaly(using: guide) }
+            if hasHeight { return fillHorizontaly(using: guide) }
+            fill(using: guide)
+            
+            // helpers
+            func fill(using guide: UILayoutGuide) {
+                topAnchor      == guide.topAnchor
+                leadingAnchor  == guide.leadingAnchor
+                trailingAnchor == guide.trailingAnchor
+                bottomAnchor   == guide.bottomAnchor
+            }
+            func fillVerticaly(using guide: UILayoutGuide) {
+                if hasHeight { return center(using: guide) }
+                if !hasWidth {
+                    leadingAnchor  >= guide.leadingAnchor
+                    trailingAnchor <= guide.trailingAnchor
+                }
+                topAnchor      == guide.topAnchor
+                bottomAnchor   == guide.bottomAnchor
+                centerXAnchor  == guide.centerXAnchor
+            }
+            func fillHorizontaly(using guide: UILayoutGuide) {
+                if hasWidth { return center(using: guide) }
+                if !hasHeight {
+                    topAnchor    >= guide.topAnchor
+                    bottomAnchor <= guide.bottomAnchor
+                }
+                leadingAnchor  == guide.leadingAnchor
+                trailingAnchor == guide.trailingAnchor
+                centerYAnchor  == guide.centerYAnchor
+            }
+            func center(using guide: UILayoutGuide) {
+                if !hasWidth {
+                    leadingAnchor  >= guide.leadingAnchor
+                    trailingAnchor <= guide.trailingAnchor
+                }
+                if !hasHeight {
+                    topAnchor    >= guide.topAnchor
+                    bottomAnchor <= guide.bottomAnchor
+                }
+                centerXAnchor == guide.centerXAnchor
+                centerYAnchor == guide.centerYAnchor
+            }
         }
     }
 }

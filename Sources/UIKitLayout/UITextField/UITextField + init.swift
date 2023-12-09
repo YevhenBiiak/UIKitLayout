@@ -13,7 +13,7 @@ extension UITextField {
         // public
         static var validator = "_validator"
         static var editingEventsActionAdded = "_editingEventsActionAdded"
-        static var validationStatusHandler = "_validationStatusHandler"
+        static var validationUpdateHandler = "_validationUpdateHandler"
         // private
     }
     
@@ -28,9 +28,9 @@ extension UITextField {
     }
     
     /// called when one of editing event recieved
-    public var validationStatusHandler: ((_ validator: TextFieldValidator) -> Void)? {
-        get { getAssociatedObject(key: &AssociatedKeys.validationStatusHandler) }
-        set { setAssociatedObject(key: &AssociatedKeys.validationStatusHandler, value: newValue) }
+    public var validationUpdateHandler: ((_ validator: TextFieldValidator) -> Void)? {
+        get { getAssociatedObject(key: &AssociatedKeys.validationUpdateHandler) }
+        set { setAssociatedObject(key: &AssociatedKeys.validationUpdateHandler, value: newValue) }
     }
     
     public convenience init(text: String) {

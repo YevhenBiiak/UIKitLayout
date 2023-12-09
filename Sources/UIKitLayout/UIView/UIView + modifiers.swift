@@ -156,7 +156,7 @@ extension UIView {
     @discardableResult
     public func padding(left: CGFloat = 0, right: CGFloat = 0, top: CGFloat = 0, bottom: CGFloat = 0) -> UIView {
         removeConstraints([.top, .leading, .trailing, .bottom], to: .superview)
-        let view = UIView()
+        let view = PaddingView()
         view.widthPercentage = widthPercentage
         view.heightPercentage = heightPercentage
         view.addSubview(self, tamic: false)

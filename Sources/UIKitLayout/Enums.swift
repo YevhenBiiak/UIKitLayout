@@ -38,6 +38,8 @@ public enum ViewAlignment {
     case inSafeAreaIgnoringBottom
     case aboveSafeArea
     case belowSafeArea
+    /// Use this alignment only for the subview of UIViewController.view
     case topBar
+    /// Use this alignment only for the subview of UIViewController.view
     case bottomBar
 }
