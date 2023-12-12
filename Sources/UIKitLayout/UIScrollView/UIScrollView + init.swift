@@ -17,24 +17,17 @@ extension UIScrollViewInitializable {
         self.addSubview(view, tamic: false)
         
         view.edgeAnchors == self.edgeAnchors
-        if axis == .horizontal {
-            if let widthMultiplier = view.widthPercentage?.value {
-                view.widthAnchor == self.widthAnchor * widthMultiplier
-            }
-            if let heightMultiplier = view.heightPercentage?.value {
-                view.heightAnchor == self.heightAnchor * heightMultiplier
-            } else if !view.hasHeight {
-                view.heightAnchor == self.frameLayoutGuide.heightAnchor
-            }
-        } else {
-            if let heightMultiplier = view.heightPercentage?.value {
-                view.heightAnchor == self.heightAnchor * heightMultiplier
-            }
-            if let widthMultiplier = view.widthPercentage?.value {
-                view.widthAnchor == self.widthAnchor * widthMultiplier
-            } else if !view.hasWidth {
-                view.widthAnchor == self.frameLayoutGuide.widthAnchor
-            }
+        
+        if let widthMultiplier = view.widthPercentage?.value {
+            view.widthAnchor == self.widthAnchor * widthMultiplier }
+        if let heightMultiplier = view.heightPercentage?.value {
+            view.heightAnchor == self.heightAnchor * heightMultiplier
+        }
+        
+        if axis == .horizontal, !view.hasHeight {
+            view.heightAnchor == self.frameLayoutGuide.heightAnchor }
+        if axis == .vertical, !view.hasWidth {
+            view.widthAnchor == self.frameLayoutGuide.widthAnchor
         }
     }
 }

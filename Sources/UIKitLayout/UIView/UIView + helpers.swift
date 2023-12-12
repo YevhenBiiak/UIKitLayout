@@ -71,8 +71,10 @@ extension UIView {
     internal var hasWidth: Bool {
         if hasConstantWidth || widthPercentage != nil {
             true
-        } else if let pv = self as? PaddingView, pv.subviews.count == 1 {
-            subviews.first?.hasWidth == true
+        } else if !constraints(.aspectRatio).isEmpty {
+            true
+        } else if let pv = self as? PaddingView, pv.subviews.count == 1, let subview = subviews.first {
+            subview.hasWidth || !subview.constraints(.aspectRatio).isEmpty
         } else {
             false
         }
@@ -80,8 +82,10 @@ extension UIView {
     internal var hasHeight: Bool {
         if hasConstantHeight || heightPercentage != nil {
             true
-        } else if let pv = self as? PaddingView, pv.subviews.count == 1 {
-            subviews.first?.hasHeight == true
+        } else if !constraints(.aspectRatio).isEmpty {
+            true
+        } else if let pv = self as? PaddingView, pv.subviews.count == 1, let subview = subviews.first {
+            subview.hasHeight || !subview.constraints(.aspectRatio).isEmpty
         } else {
             false
         }
@@ -92,11 +96,11 @@ extension UIView {
         translatesAutoresizingMaskIntoConstraints = false
         var guide = UILayoutGuide()
         
-        var cantFillHorizontally: Bool {
-            hasWidth && (superview.hasWidth || superview.isRootView)
+        var canFillHorizontally: Bool {
+            !(hasWidth && (superview.hasWidth || superview.isRootView))
         }
-        var cantFillVertically: Bool {
-            hasHeight && (superview.hasHeight || superview.isRootView)
+        var canFillVertically: Bool {
+            !(hasHeight && (superview.hasHeight || superview.isRootView))
         }
         
         switch alignment {
@@ -104,12 +108,12 @@ extension UIView {
         // MARK: Filling cases
         
         case .fill:
-            if cantFillHorizontally { return alignInSuperview(.fillVerticaly) }
-            if cantFillVertically   { return alignInSuperview(.fillHorizontaly) }
+            if !canFillHorizontally { return alignInSuperview(.fillVerticaly) }
+            if !canFillVertically   { return alignInSuperview(.fillHorizontaly) }
             edgeAnchors == superview.edgeAnchors
         case .fillVerticaly:
-            if cantFillVertically { return alignInSuperview(.center) }
-            if !hasWidth {
+            if !canFillVertically { return alignInSuperview(.center) }
+            if canFillHorizontally {
                 leadingAnchor  >= superview.leadingAnchor
                 trailingAnchor <= superview.trailingAnchor
             }
@@ -117,8 +121,8 @@ extension UIView {
             bottomAnchor   == superview.bottomAnchor
             centerXAnchor  == superview.centerXAnchor
         case .fillHorizontaly:
-            if cantFillHorizontally { return alignInSuperview(.center) }
-            if !hasHeight {
+            if !canFillHorizontally { return alignInSuperview(.center) }
+            if canFillVertically {
                 topAnchor    >= superview.topAnchor
                 bottomAnchor <= superview.bottomAnchor
             }
@@ -126,32 +130,32 @@ extension UIView {
             trailingAnchor == superview.trailingAnchor
             centerYAnchor  == superview.centerYAnchor
         case .fillTop:
-            if cantFillHorizontally { return alignInSuperview(.top) }
-            if !hasHeight {
+            if !canFillHorizontally { return alignInSuperview(.top) }
+            if canFillVertically {
                 bottomAnchor <= superview.bottomAnchor
             }
             topAnchor      == superview.topAnchor
             leadingAnchor  == superview.leadingAnchor
             trailingAnchor == superview.trailingAnchor
         case .fillBottom:
-            if cantFillHorizontally { return alignInSuperview(.bottom) }
-            if !hasHeight {
+            if !canFillHorizontally { return alignInSuperview(.bottom) }
+            if canFillVertically {
                 topAnchor >= superview.topAnchor
             }
             leadingAnchor  == superview.leadingAnchor
             trailingAnchor == superview.trailingAnchor
             bottomAnchor   == superview.bottomAnchor
         case .fillLeading:
-            if cantFillVertically { return alignInSuperview(.leading) }
-            if !hasWidth {
+            if !canFillVertically { return alignInSuperview(.leading) }
+            if canFillHorizontally {
                 trailingAnchor <= superview.trailingAnchor
             }
             topAnchor     == superview.topAnchor
             leadingAnchor == superview.leadingAnchor
             bottomAnchor  == superview.bottomAnchor
         case .fillTrailing:
-            if cantFillVertically { return alignInSuperview(.trailing) }
-            if !hasWidth {
+            if !canFillVertically { return alignInSuperview(.trailing) }
+            if canFillHorizontally {
                 leadingAnchor <= superview.leadingAnchor
             }
             topAnchor      == superview.topAnchor
@@ -162,37 +166,37 @@ extension UIView {
         // MARK: Corner cases
         
         case .topLeading:
-            if !hasWidth {
+            if canFillHorizontally {
                 trailingAnchor <= superview.trailingAnchor
             }
-            if !hasHeight {
+            if canFillVertically {
                 bottomAnchor <= superview.bottomAnchor
             }
             topAnchor     == superview.topAnchor
             leadingAnchor == superview.leadingAnchor
         case .topTrailing:
-            if !hasWidth {
+            if canFillHorizontally {
                 leadingAnchor >= superview.leadingAnchor
             }
-            if !hasHeight {
+            if canFillVertically {
                 bottomAnchor <= superview.bottomAnchor
             }
             topAnchor      == superview.topAnchor
             trailingAnchor == superview.trailingAnchor
         case .bottomLeading:
-            if !hasWidth {
+            if canFillHorizontally {
                 trailingAnchor <= superview.trailingAnchor
             }
-            if !hasHeight {
+            if canFillVertically {
                 topAnchor >= superview.topAnchor
             }
             leadingAnchor  == superview.leadingAnchor
             bottomAnchor   == superview.bottomAnchor
         case .bottomTrailing:
-            if !hasWidth {
+            if canFillHorizontally {
                 leadingAnchor >= superview.leadingAnchor
             }
-            if !hasHeight {
+            if canFillVertically {
                 topAnchor >= superview.topAnchor
             }
             trailingAnchor == superview.trailingAnchor
@@ -202,51 +206,51 @@ extension UIView {
         // MARK: Centering cases
         
         case .center:
-            if !hasWidth {
+            if canFillHorizontally {
                 leadingAnchor  >= superview.leadingAnchor
                 trailingAnchor <= superview.trailingAnchor
             }
-            if !hasHeight {
+            if canFillVertically {
                 topAnchor    >= superview.topAnchor
                 bottomAnchor <= superview.bottomAnchor
             }
             centerAnchor == superview.centerAnchor
         case .top:
-            if !hasWidth {
+            if canFillHorizontally {
                 leadingAnchor  >= superview.leadingAnchor
                 trailingAnchor <= superview.trailingAnchor
             }
-            if !hasHeight {
+            if canFillVertically {
                 bottomAnchor <= superview.bottomAnchor
             }
             topAnchor     == superview.topAnchor
             centerXAnchor == superview.centerXAnchor
         case .leading:
-            if !hasWidth  {
+            if canFillHorizontally  {
                 trailingAnchor <= superview.trailingAnchor
             }
-            if !hasHeight {
+            if canFillVertically {
                 topAnchor    >= superview.topAnchor
                 bottomAnchor <= superview.bottomAnchor
             }
             leadingAnchor  == superview.leadingAnchor
             centerYAnchor  == superview.centerYAnchor
         case .trailing:
-            if !hasWidth {
+            if canFillHorizontally {
                 leadingAnchor  >= superview.leadingAnchor
             }
-            if !hasHeight {
+            if canFillVertically {
                 topAnchor      >= superview.topAnchor
                 bottomAnchor   <= superview.bottomAnchor
             }
             trailingAnchor == superview.trailingAnchor
             centerYAnchor  == superview.centerYAnchor
         case .bottom:
-            if !hasWidth {
+            if canFillHorizontally {
                 leadingAnchor  >= superview.leadingAnchor
                 trailingAnchor <= superview.trailingAnchor
             }
-            if !hasHeight {
+            if canFillVertically {
                 topAnchor >= superview.topAnchor
             }
             bottomAnchor  == superview.bottomAnchor
