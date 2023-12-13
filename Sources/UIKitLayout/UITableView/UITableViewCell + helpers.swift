@@ -11,9 +11,10 @@ extension UITableViewCell: ReuseIdentifiable {}
 extension UITableViewCell {
     
     private struct AssociatedKeys {
-        static var indexPath = "indexPath"
+        static var indexPath = "UIKitLayout_indexPath"
     }
     
+    @available(*, deprecated, message: "Might cause unexpected results. Create your own indexPath property and pass it manually")
     public var indexPath: IndexPath {
         get {
             let indexPath: IndexPath? = getAssociatedObject(key: &AssociatedKeys.indexPath)

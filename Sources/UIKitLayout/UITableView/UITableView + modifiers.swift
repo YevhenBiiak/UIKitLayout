@@ -39,7 +39,7 @@ extension UITableView {
     }
     
     @discardableResult
-    public func allowSelection(_ enable: Bool) -> Self {
+    public func allowsSelection(_ enable: Bool) -> Self {
         allowsSelection = enable
         return self
     }

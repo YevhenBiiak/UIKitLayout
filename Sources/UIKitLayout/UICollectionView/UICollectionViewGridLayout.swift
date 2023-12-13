@@ -69,56 +69,59 @@ public class UICollectionViewGridLayout: UICollectionViewLayout {
         guard let collectionView = collectionView else { return }
         
         itemsAttributes.removeAll()
-        contentWidth = .zero
+        contentWidth  = .zero
         contentHeight = .zero
         
-        var origin = CGPoint(x: contentInsets.leading, y: contentInsets.top)
+        var origin   = CGPoint(x: contentInsets.leading, y: contentInsets.top)
         var itemSize = CGSize.zero
-        var numberOfVisibleRows = CGFloat.zero
+        var numberOfVisibleRows    = CGFloat.zero
         var numberOfVisibleColumns = CGFloat.zero
         
-        let availableWidth = collectionView.bounds.width - contentInsets.leading - contentInsets.trailing
+        let availableWidth  = collectionView.bounds.width - contentInsets.leading - contentInsets.trailing
         let availableHeight = collectionView.bounds.height - contentInsets.top - contentInsets.bottom
         
-        contentWidth = availableWidth
+        contentWidth  = availableWidth
         contentHeight = availableHeight
         
         if case .count(let columnCount) = column {
-            numberOfVisibleColumns = columnCount.rounded(.up)
+            numberOfVisibleColumns = scrollDirection == .horizontal ? columnCount.rounded(.up) : columnCount.rounded(.down)
             itemSize.width = (availableWidth - (numberOfVisibleColumns - 1) * spacing.horizontal) / columnCount
-            while availableWidth < numberOfVisibleColumns * itemSize.width + (numberOfVisibleColumns - 1) * spacing.horizontal, scrollDirection == .vertical {
-                numberOfVisibleColumns -= 1
-            }
         } else if case .width(let widthValue) = column {
             itemSize.width = widthValue
-            numberOfVisibleColumns = (availableWidth / itemSize.width).rounded(.down)
+            recalculateNumberOfVisibleColumns()
+        }
+        
+        if case .count(let rowCount) = row {
+            numberOfVisibleRows = scrollDirection == .vertical ? rowCount.rounded(.up) : rowCount.rounded(.down)
+            itemSize.height = (availableHeight - (numberOfVisibleRows - 1) * spacing.vertical) / rowCount
+        } else if case .height(let heightValue) = row {
+            itemSize.height = heightValue
+            recalculateNumberOfVisibleRows()
+        }
+        
+        if case .aspectRatio(let aspectRatio) = column {
+            itemSize.width = itemSize.height * aspectRatio
+            recalculateNumberOfVisibleColumns()
+        }
+        if case .aspectRatio(let aspectRatio) = row {
+            itemSize.height = itemSize.width / aspectRatio
+            recalculateNumberOfVisibleRows()
+        }
+        
+        func recalculateNumberOfVisibleColumns() {
+            numberOfVisibleColumns = (availableWidth  / itemSize.width).rounded(.up)
             while availableWidth < numberOfVisibleColumns * itemSize.width + (numberOfVisibleColumns - 1) * spacing.horizontal {
                 numberOfVisibleColumns -= 1
             }
         }
         
-        if case .count(let rowCount) = row {
-            numberOfVisibleRows = rowCount.rounded(.up)
-            itemSize.height = (availableHeight - (numberOfVisibleRows - 1) * spacing.vertical) / rowCount
-            while availableHeight < numberOfVisibleRows * itemSize.height + (numberOfVisibleRows - 1) * spacing.vertical, scrollDirection == .horizontal {
-                numberOfVisibleRows -= 1
-            }
-        } else if case .height(let heightValue) = row {
-            itemSize.height = heightValue
-            numberOfVisibleRows = (availableHeight / itemSize.height).rounded(.down)
+        func recalculateNumberOfVisibleRows() {
+            numberOfVisibleRows = (availableHeight / itemSize.height).rounded(.up)
             while availableHeight < numberOfVisibleRows * itemSize.height + (numberOfVisibleRows - 1) * spacing.vertical {
                 numberOfVisibleRows -= 1
             }
         }
-        
-        if case .aspectRatio(let aspectRatio) = row {
-            itemSize.height = itemSize.width / aspectRatio
-        }
-        
-        if case .aspectRatio(let aspectRatio) = column {
-            itemSize.width = itemSize.height * aspectRatio
-        }
-        
+
         // Iteration
         
         let numberOfSections = collectionView.numberOfSections
