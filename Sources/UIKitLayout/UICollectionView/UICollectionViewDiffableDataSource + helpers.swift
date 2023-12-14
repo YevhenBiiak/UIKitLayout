@@ -14,4 +14,11 @@ extension UICollectionViewDiffableDataSource {
         snapshot.appendItems(items)
         applySnapshotUsingReloadData(snapshot)
     }
+    
+    public func apply(items: [ItemIdentifierType], animate: Bool = true) where SectionIdentifierType == Int {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, ItemIdentifierType>()
+        snapshot.appendSections([0])
+        snapshot.appendItems(items)
+        apply(snapshot, animatingDifferences: animate)
+    }
 }
