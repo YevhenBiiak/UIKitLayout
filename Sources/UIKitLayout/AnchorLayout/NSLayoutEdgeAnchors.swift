@@ -24,6 +24,17 @@ extension UIView {
     }
 }
 
+extension UILayoutGuide {
+    public var edgeAnchors: NSLayoutEdgeAnchors {
+        NSLayoutEdgeAnchors(
+            topAnchor: topAnchor,
+            leadingAnchor: leadingAnchor,
+            trailingAnchor: trailingAnchor,
+            bottomAnchor: bottomAnchor
+        )
+    }
+}
+
 extension NSLayoutEdgeAnchors {
     public static func == (lhs: NSLayoutEdgeAnchors, rhs: NSLayoutEdgeAnchors) {
         lhs.topAnchor == rhs.topAnchor

@@ -1,7 +1,6 @@
 //
 //  UIWindow + topViewController.swift
 //
-//
 //  Created by Yevhen Biiak on 16.11.2023.
 //
 

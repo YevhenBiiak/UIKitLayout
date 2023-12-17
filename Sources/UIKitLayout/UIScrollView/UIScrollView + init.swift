@@ -13,15 +13,16 @@ extension UIScrollViewInitializable {
     
     public init(_ axis: NSLayoutConstraint.Axis, _ content: () -> UIView) where Self == UIScrollView {
         self.init(frame: .zero)
+        
         let view = content()
         self.addSubview(view, tamic: false)
         
-        view.edgeAnchors == self.edgeAnchors
+        view.edgeAnchors == self.contentLayoutGuide.edgeAnchors
         
         if let widthMultiplier = view.widthPercentage?.value {
-            view.widthAnchor == self.widthAnchor * widthMultiplier }
+            view.widthAnchor == self.frameLayoutGuide.widthAnchor * widthMultiplier }
         if let heightMultiplier = view.heightPercentage?.value {
-            view.heightAnchor == self.heightAnchor * heightMultiplier
+            view.heightAnchor == self.frameLayoutGuide.heightAnchor * heightMultiplier
         }
         
         if axis == .horizontal, !view.hasHeight {

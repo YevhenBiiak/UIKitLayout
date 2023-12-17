@@ -1,7 +1,6 @@
 //
 //  UIViewController + isPad, isPhone.swift
 //
-//
 //  Created by Yevhen Biiak on 10.10.2023.
 //
 

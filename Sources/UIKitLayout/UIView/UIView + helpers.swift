@@ -110,151 +110,123 @@ extension UIView {
         case .fill:
             if !canFillHorizontally { return alignInSuperview(.fillVerticaly) }
             if !canFillVertically   { return alignInSuperview(.fillHorizontaly) }
-            edgeAnchors == superview.edgeAnchors
+            pin(.top, .leading, .trailing, .bottom)
         case .fillVerticaly:
             if !canFillVertically { return alignInSuperview(.center) }
             if canFillHorizontally {
-                leadingAnchor  >= superview.leadingAnchor
-                trailingAnchor <= superview.trailingAnchor
+                pin(.flexibleLeading, .flexibleTailing)
             }
-            topAnchor      == superview.topAnchor
-            bottomAnchor   == superview.bottomAnchor
-            centerXAnchor  == superview.centerXAnchor
+            pin(.top, .bottom, .centerX)
         case .fillHorizontaly:
             if !canFillHorizontally { return alignInSuperview(.center) }
             if canFillVertically {
-                topAnchor    >= superview.topAnchor
-                bottomAnchor <= superview.bottomAnchor
+                pin(.flexibleTop, .flexibleBottom)
             }
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor == superview.trailingAnchor
-            centerYAnchor  == superview.centerYAnchor
+            pin(.leading, .trailing, .centerY)
         case .fillTop:
             if !canFillHorizontally { return alignInSuperview(.top) }
             if canFillVertically {
-                bottomAnchor <= superview.bottomAnchor
+                pin(.flexibleBottom)
             }
-            topAnchor      == superview.topAnchor
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor == superview.trailingAnchor
+            pin(.top, .leading, .trailing)
         case .fillBottom:
             if !canFillHorizontally { return alignInSuperview(.bottom) }
             if canFillVertically {
-                topAnchor >= superview.topAnchor
+                pin(.flexibleTop)
             }
-            leadingAnchor  == superview.leadingAnchor
-            trailingAnchor == superview.trailingAnchor
-            bottomAnchor   == superview.bottomAnchor
+            pin(.leading, .trailing, .bottom)
         case .fillLeading:
             if !canFillVertically { return alignInSuperview(.leading) }
             if canFillHorizontally {
-                trailingAnchor <= superview.trailingAnchor
+                pin(.flexibleTailing)
             }
-            topAnchor     == superview.topAnchor
-            leadingAnchor == superview.leadingAnchor
-            bottomAnchor  == superview.bottomAnchor
+            pin(.top, .leading, .bottom)
         case .fillTrailing:
             if !canFillVertically { return alignInSuperview(.trailing) }
             if canFillHorizontally {
-                leadingAnchor <= superview.leadingAnchor
+                pin(.flexibleLeading)
             }
-            topAnchor      == superview.topAnchor
-            trailingAnchor == superview.trailingAnchor
-            bottomAnchor   == superview.bottomAnchor
+            pin(.top, .trailing, .bottom)
             
             
         // MARK: Corner cases
         
         case .topLeading:
             if canFillHorizontally {
-                trailingAnchor <= superview.trailingAnchor
+                pin(.flexibleTailing)
             }
             if canFillVertically {
-                bottomAnchor <= superview.bottomAnchor
+                pin(.flexibleBottom)
             }
-            topAnchor     == superview.topAnchor
-            leadingAnchor == superview.leadingAnchor
+            pin(.top, .leading)
         case .topTrailing:
             if canFillHorizontally {
-                leadingAnchor >= superview.leadingAnchor
+                pin(.flexibleLeading)
             }
             if canFillVertically {
-                bottomAnchor <= superview.bottomAnchor
+                pin(.flexibleBottom)
             }
-            topAnchor      == superview.topAnchor
-            trailingAnchor == superview.trailingAnchor
+            pin(.top, .trailing)
         case .bottomLeading:
             if canFillHorizontally {
-                trailingAnchor <= superview.trailingAnchor
+                pin(.flexibleTailing)
             }
             if canFillVertically {
-                topAnchor >= superview.topAnchor
+                pin(.flexibleTop)
             }
-            leadingAnchor  == superview.leadingAnchor
-            bottomAnchor   == superview.bottomAnchor
+            pin(.leading, .bottom)
         case .bottomTrailing:
             if canFillHorizontally {
-                leadingAnchor >= superview.leadingAnchor
+                pin(.flexibleLeading)
             }
             if canFillVertically {
-                topAnchor >= superview.topAnchor
+                pin(.flexibleTop)
             }
-            trailingAnchor == superview.trailingAnchor
-            bottomAnchor   == superview.bottomAnchor
+            pin(.trailing, .bottom)
             
             
         // MARK: Centering cases
         
         case .center:
             if canFillHorizontally {
-                leadingAnchor  >= superview.leadingAnchor
-                trailingAnchor <= superview.trailingAnchor
+                pin(.flexibleLeading, .flexibleTailing)
             }
             if canFillVertically {
-                topAnchor    >= superview.topAnchor
-                bottomAnchor <= superview.bottomAnchor
+                pin(.flexibleTop, .flexibleBottom)
             }
-            centerAnchor == superview.centerAnchor
+            pin(.centerX, .centerY)
         case .top:
             if canFillHorizontally {
-                leadingAnchor  >= superview.leadingAnchor
-                trailingAnchor <= superview.trailingAnchor
+                pin(.flexibleLeading, .flexibleTailing)
             }
             if canFillVertically {
-                bottomAnchor <= superview.bottomAnchor
+                pin(.flexibleBottom)
             }
-            topAnchor     == superview.topAnchor
-            centerXAnchor == superview.centerXAnchor
+            pin(.top, .centerX)
         case .leading:
             if canFillHorizontally  {
-                trailingAnchor <= superview.trailingAnchor
+                pin(.flexibleTailing)
             }
             if canFillVertically {
-                topAnchor    >= superview.topAnchor
-                bottomAnchor <= superview.bottomAnchor
+                pin(.flexibleTop, .flexibleBottom)
             }
-            leadingAnchor  == superview.leadingAnchor
-            centerYAnchor  == superview.centerYAnchor
+            pin(.leading, .centerY)
         case .trailing:
             if canFillHorizontally {
-                leadingAnchor  >= superview.leadingAnchor
+                pin(.flexibleLeading)
             }
             if canFillVertically {
-                topAnchor      >= superview.topAnchor
-                bottomAnchor   <= superview.bottomAnchor
+                pin(.flexibleTop, .flexibleBottom)
             }
-            trailingAnchor == superview.trailingAnchor
-            centerYAnchor  == superview.centerYAnchor
+            pin(.trailing, .centerY)
         case .bottom:
             if canFillHorizontally {
-                leadingAnchor  >= superview.leadingAnchor
-                trailingAnchor <= superview.trailingAnchor
+                pin(.flexibleLeading, .flexibleTailing)
             }
             if canFillVertically {
-                topAnchor >= superview.topAnchor
+                pin(.flexibleTop)
             }
-            bottomAnchor  == superview.bottomAnchor
-            centerXAnchor == superview.centerXAnchor
+            pin(.bottom, .centerX)
             
         // MARK: Safe Area cases
         
@@ -380,6 +352,64 @@ extension UIView {
                 }
                 centerXAnchor == guide.centerXAnchor
                 centerYAnchor == guide.centerYAnchor
+            }
+        }
+        
+        enum AnchotAttribute {
+            case top, leading, trailing, bottom, flexibleTop, flexibleLeading, flexibleTailing, flexibleBottom, centerX, centerY
+        }
+        
+        func pin(_ attributes: AnchotAttribute...) {
+            if let scrollView = superview as? UIScrollView {
+                for attribute in attributes {
+                    switch attribute {
+                    case .top:
+                        topAnchor == scrollView.frameLayoutGuide.topAnchor
+                    case .leading:
+                        leadingAnchor == scrollView.frameLayoutGuide.leadingAnchor
+                    case .trailing:
+                        trailingAnchor == scrollView.frameLayoutGuide.trailingAnchor
+                    case .bottom:
+                        bottomAnchor == scrollView.frameLayoutGuide.bottomAnchor
+                    case .flexibleTop:
+                        topAnchor >= scrollView.frameLayoutGuide.topAnchor
+                    case .flexibleLeading:
+                        leadingAnchor >= scrollView.frameLayoutGuide.leadingAnchor
+                    case .flexibleTailing:
+                        trailingAnchor <= scrollView.frameLayoutGuide.trailingAnchor
+                    case .flexibleBottom:
+                        bottomAnchor <= scrollView.frameLayoutGuide.bottomAnchor
+                    case .centerX:
+                        centerXAnchor == scrollView.frameLayoutGuide.centerXAnchor
+                    case .centerY:
+                        centerYAnchor == scrollView.frameLayoutGuide.centerYAnchor
+                    }
+                }
+            } else {
+                for attribute in attributes {
+                    switch attribute {
+                    case .top:
+                        topAnchor == superview.topAnchor
+                    case .leading:
+                        leadingAnchor == superview.leadingAnchor
+                    case .trailing:
+                        trailingAnchor == superview.trailingAnchor
+                    case .bottom:
+                        bottomAnchor == superview.bottomAnchor
+                    case .flexibleTop:
+                        topAnchor >= superview.topAnchor
+                    case .flexibleLeading:
+                        leadingAnchor >= superview.leadingAnchor
+                    case .flexibleTailing:
+                        trailingAnchor <= superview.trailingAnchor
+                    case .flexibleBottom:
+                        bottomAnchor <= superview.bottomAnchor
+                    case .centerX:
+                        centerXAnchor == superview.centerXAnchor
+                    case .centerY:
+                        centerYAnchor == superview.centerYAnchor
+                    }
+                }
             }
         }
     }
