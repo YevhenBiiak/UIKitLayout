@@ -24,7 +24,7 @@ extension NSObject {
     ///     set { setAssociatedObject(key: &AssociatedKeys.actions, value: newValue) }
     /// }
     /// ```
-    func getAssociatedObject<T>(key: inout String) -> T? {
+    internal func getAssociatedObject<T>(key: inout String) -> T? {
         withUnsafePointer(to: &key) {
             objc_getAssociatedObject(self, $0) as? T
         }
@@ -45,10 +45,14 @@ extension NSObject {
     ///     set { setAssociatedObject(key: &AssociatedKeys.actions, value: newValue) }
     /// }
     /// ```
-    func setAssociatedObject<T>(key: inout String, value: T) {
+    internal func setAssociatedObject<T>(key: inout String, value: T) {
         withUnsafePointer(to: &key) {
             objc_setAssociatedObject(self, $0, value, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
+    }
+    
+    internal func isStrongly(_ T: NSObject.Type) -> Bool {
+        type(of: self) == T
     }
 }
 

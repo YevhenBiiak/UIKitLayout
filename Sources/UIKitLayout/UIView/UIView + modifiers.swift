@@ -156,7 +156,7 @@ extension UIView {
     @discardableResult
     public func padding(left: CGFloat = 0, right: CGFloat = 0, top: CGFloat = 0, bottom: CGFloat = 0) -> UIView {
         removeConstraints([.top, .leading, .trailing, .bottom], to: .superview)
-        let view = PaddingView()
+        let view = UIView()
         view.widthPercentage = widthPercentage
         view.heightPercentage = heightPercentage
         view.addSubview(self, tamic: false)
@@ -202,6 +202,16 @@ extension UIView {
     @discardableResult
     public func offset(x: CGFloat, y: CGFloat) -> UIView {
         return padding(left: x, right: -x, top: y, bottom: -y)
+    }
+    
+    @discardableResult
+    public func offset(x: CGFloat) -> UIView {
+        return offset(x: x, y: 0)
+    }
+    
+    @discardableResult
+    public func offset(y: CGFloat) -> UIView {
+        return offset(x: 0, y: y)
     }
     
     @discardableResult

@@ -64,28 +64,95 @@ extension UIView {
     }
 }
 
-internal class PaddingView: UIView {}
+private extension UIStackView {
+    
+    internal var canStretchHorizontally: Bool {
+        arrangedSubviews.contains { !$0.hasWidth }
+    }
+    internal var canStretchVertically: Bool {
+        arrangedSubviews.contains { !$0.hasHeight }
+    }
+}
 
 extension UIView {
     
-    internal var hasWidth: Bool {
-        if hasConstantWidth || widthPercentage != nil {
+    private var firstSubviewThatFills: UIView? {
+        subviews.first {
+            !$0.constraints(.top,      to: .superview).isEmpty &&
+            !$0.constraints(.leading,  to: .superview).isEmpty &&
+            !$0.constraints(.trailing, to: .superview).isEmpty &&
+            !$0.constraints(.bottom,   to: .superview).isEmpty
+        }
+    }
+    
+    private var isReusableCell: Bool {
+        (self is UICollectionViewCell) || (superview is UICollectionViewCell) ||
+        (self is UITableViewCell)      || (superview is UITableViewCell)
+    }
+    
+    private var hasWidthConstraint: Bool {
+        if !constraints(.width).isEmpty {
             true
-        } else if !constraints(.aspectRatio).isEmpty {
-            true
-        } else if let pv = self as? PaddingView, pv.subviews.count == 1, let subview = subviews.first {
-            subview.hasWidth || !subview.constraints(.aspectRatio).isEmpty
+        } else if let subview = firstSubviewThatFills {
+            subview.hasWidthConstraint
         } else {
             false
         }
     }
-    internal var hasHeight: Bool {
-        if hasConstantHeight || heightPercentage != nil {
+    
+    private var hasHeightConstraint: Bool {
+        if !constraints(.height).isEmpty {
+            true
+        } else if let subview = firstSubviewThatFills {
+            subview.hasHeightConstraint
+        } else {
+            false
+        }
+    }
+    
+    private var hasWidthPercentage: Bool {
+        widthPercentage != nil
+    }
+    
+    private var hasHeightPercentage: Bool {
+        heightPercentage != nil
+    }
+    
+    private var hasAspectRatio: Bool {
+        if isRootView || isReusableCell {
             true
         } else if !constraints(.aspectRatio).isEmpty {
             true
-        } else if let pv = self as? PaddingView, pv.subviews.count == 1, let subview = subviews.first {
-            subview.hasHeight || !subview.constraints(.aspectRatio).isEmpty
+        } else if let subview = firstSubviewThatFills {
+            subview.hasAspectRatio
+        } else {
+            false
+        }
+    }
+    
+    internal var hasWidth: Bool {
+        if isRootView || isReusableCell {
+            true
+        } else if hasAspectRatio && (hasWidthConstraint || hasHeightConstraint || hasWidthPercentage || hasHeightPercentage) {
+            true
+        } else if hasWidthConstraint || hasWidthPercentage {
+            true
+        } else if let stack = self as? UIStackView {
+            !stack.canStretchHorizontally
+        } else {
+            false
+        }
+    }
+    
+    internal var hasHeight: Bool {
+        if isRootView || isReusableCell {
+            true
+        } else if hasAspectRatio && (hasWidthConstraint || hasHeightConstraint || hasWidthPercentage || hasHeightPercentage) {
+            true
+        } else if hasHeightConstraint || hasHeightPercentage {
+            true
+        } else if let stack = self as? UIStackView {
+            !stack.canStretchVertically
         } else {
             false
         }
@@ -97,10 +164,16 @@ extension UIView {
         var guide = UILayoutGuide()
         
         var canFillHorizontally: Bool {
-            !(hasWidth && (superview.hasWidth || superview.isRootView))
+            !hasWidth || !superview.hasWidth
         }
         var canFillVertically: Bool {
-            !(hasHeight && (superview.hasHeight || superview.isRootView))
+            !hasHeight || !superview.hasHeight
+        }
+        var needPinHorizontally: Bool {
+            !hasWidth
+        }
+        var needPinVertically: Bool {
+            !hasHeight
         }
         
         switch alignment {
@@ -113,37 +186,37 @@ extension UIView {
             pin(.top, .leading, .trailing, .bottom)
         case .fillVerticaly:
             if !canFillVertically { return alignInSuperview(.center) }
-            if canFillHorizontally {
+            if needPinHorizontally {
                 pin(.flexibleLeading, .flexibleTailing)
             }
             pin(.top, .bottom, .centerX)
         case .fillHorizontaly:
             if !canFillHorizontally { return alignInSuperview(.center) }
-            if canFillVertically {
+            if needPinVertically {
                 pin(.flexibleTop, .flexibleBottom)
             }
             pin(.leading, .trailing, .centerY)
         case .fillTop:
             if !canFillHorizontally { return alignInSuperview(.top) }
-            if canFillVertically {
+            if needPinVertically {
                 pin(.flexibleBottom)
             }
             pin(.top, .leading, .trailing)
         case .fillBottom:
             if !canFillHorizontally { return alignInSuperview(.bottom) }
-            if canFillVertically {
+            if needPinVertically {
                 pin(.flexibleTop)
             }
             pin(.leading, .trailing, .bottom)
         case .fillLeading:
             if !canFillVertically { return alignInSuperview(.leading) }
-            if canFillHorizontally {
+            if needPinHorizontally {
                 pin(.flexibleTailing)
             }
             pin(.top, .leading, .bottom)
         case .fillTrailing:
             if !canFillVertically { return alignInSuperview(.trailing) }
-            if canFillHorizontally {
+            if needPinHorizontally {
                 pin(.flexibleLeading)
             }
             pin(.top, .trailing, .bottom)
@@ -152,34 +225,34 @@ extension UIView {
         // MARK: Corner cases
         
         case .topLeading:
-            if canFillHorizontally {
+            if needPinHorizontally {
                 pin(.flexibleTailing)
             }
-            if canFillVertically {
+            if needPinVertically {
                 pin(.flexibleBottom)
             }
             pin(.top, .leading)
         case .topTrailing:
-            if canFillHorizontally {
+            if needPinHorizontally {
                 pin(.flexibleLeading)
             }
-            if canFillVertically {
+            if needPinVertically {
                 pin(.flexibleBottom)
             }
             pin(.top, .trailing)
         case .bottomLeading:
-            if canFillHorizontally {
+            if needPinHorizontally {
                 pin(.flexibleTailing)
             }
-            if canFillVertically {
+            if needPinVertically {
                 pin(.flexibleTop)
             }
             pin(.leading, .bottom)
         case .bottomTrailing:
-            if canFillHorizontally {
+            if needPinHorizontally {
                 pin(.flexibleLeading)
             }
-            if canFillVertically {
+            if needPinVertically {
                 pin(.flexibleTop)
             }
             pin(.trailing, .bottom)
@@ -188,42 +261,42 @@ extension UIView {
         // MARK: Centering cases
         
         case .center:
-            if canFillHorizontally {
+            if needPinHorizontally {
                 pin(.flexibleLeading, .flexibleTailing)
             }
-            if canFillVertically {
+            if needPinVertically {
                 pin(.flexibleTop, .flexibleBottom)
             }
             pin(.centerX, .centerY)
         case .top:
-            if canFillHorizontally {
+            if needPinHorizontally {
                 pin(.flexibleLeading, .flexibleTailing)
             }
-            if canFillVertically {
+            if needPinVertically {
                 pin(.flexibleBottom)
             }
             pin(.top, .centerX)
         case .leading:
-            if canFillHorizontally  {
+            if needPinHorizontally  {
                 pin(.flexibleTailing)
             }
-            if canFillVertically {
+            if needPinVertically {
                 pin(.flexibleTop, .flexibleBottom)
             }
             pin(.leading, .centerY)
         case .trailing:
-            if canFillHorizontally {
+            if needPinHorizontally {
                 pin(.flexibleLeading)
             }
-            if canFillVertically {
+            if needPinVertically {
                 pin(.flexibleTop, .flexibleBottom)
             }
             pin(.trailing, .centerY)
         case .bottom:
-            if canFillHorizontally {
+            if needPinHorizontally {
                 pin(.flexibleLeading, .flexibleTailing)
             }
-            if canFillVertically {
+            if needPinVertically {
                 pin(.flexibleTop)
             }
             pin(.bottom, .centerX)

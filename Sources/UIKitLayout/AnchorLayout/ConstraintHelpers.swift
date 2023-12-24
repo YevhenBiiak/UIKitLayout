@@ -23,7 +23,6 @@ extension UIView {
 
 extension UIView {
     
-    /// returns a constraints with a width or height attribute and a constant value
     public func constraints(_ attribute: ConstraintAttribute) -> [NSLayoutConstraint] {
         switch attribute {
         case .top, .bottom, .leading, .trailing:
@@ -86,18 +85,6 @@ extension UIView {
 // MARK: Removing Constraint methods
 
 extension UIView {
-    
-    internal var hasConstantWidth: Bool {
-        !constraints(.width).isEmpty
-    }
-    
-    internal var hasConstantHeight: Bool {
-        !constraints(.height).isEmpty
-    }
-    
-    internal var hasAspectRatio: Bool {
-        !constraints(.aspectRatio).isEmpty
-    }
     
     // MARK: DimensionAttribute
     
