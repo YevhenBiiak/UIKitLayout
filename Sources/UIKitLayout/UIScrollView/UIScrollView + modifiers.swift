@@ -65,7 +65,14 @@ extension UIScrollView {
     }
     
     @discardableResult
+    @available(*, deprecated, renamed: "bouncesEnabled(_:)")
     public func bounces(_ enabled: Bool) -> Self {
+        bounces = enabled
+        return self
+    }
+    
+    @discardableResult
+    public func bouncesEnabled(_ enabled: Bool) -> Self {
         bounces = enabled
         return self
     }

@@ -34,7 +34,11 @@ extension UIButton {
     }
     
     public convenience init(_ publisher: Published<String>.Publisher, image: UIImage) {
-        self.init(publisher)
+        self.init(configuration: .filled())
+        publisher.sink { [weak self] title in
+            self?.configuration?.title = title
+        }
+        .store(in: self)
         configuration?.image = image
     }
 }
