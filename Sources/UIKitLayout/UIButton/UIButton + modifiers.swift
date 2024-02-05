@@ -59,9 +59,33 @@ extension UIButton {
     }
     
     @discardableResult
+    public func backgroundColor(_ color: UIColor, for state: UIControl.State) -> Self {
+        validateConfiguration()
+        _backgroundColors[state.rawValue] = color
+        configurationUpdateHandler = defaultUpdateHandler
+        configurationUpdateHandler?(self)
+        return self
+    }
+    
+    @discardableResult
+    public func foregroundColor(_ color: UIColor, for state: UIControl.State) -> Self {
+        validateConfiguration()
+        _foregroundColors[state.rawValue] = color
+        configurationUpdateHandler = defaultUpdateHandler
+        configurationUpdateHandler?(self)
+        return self
+    }
+    
+    @discardableResult
     public func font(_ font: UIFont) -> Self {
         validateConfiguration()
         configuration?.font = font
+        return self
+    }
+    
+    @discardableResult
+    public func enabled(_ enabled: Bool) -> Self {
+        isEnabled = enabled
         return self
     }
     
@@ -127,6 +151,7 @@ extension UIButton {
         }
         configuration?.background.strokeColor = color
         configuration?.background.strokeWidth = width
+        _isStrokeColorAdded = true
         return self
     }
     
@@ -154,9 +179,70 @@ extension UIButton {
 
 
 extension UIButton {
+    
     private func validateConfiguration() {
         if configuration == nil {
             configuration = .filled()
+        }
+    }
+    
+    private var defaultUpdateHandler: (UIButton) -> Void {
+        { button in
+            
+            if let bgColor = button._backgroundColors[button.state.rawValue] {
+                button.configuration?.background.backgroundColor = bgColor
+            } else if let normalBGColor = button._backgroundColors[UIControl.State.normal.rawValue] {
+                setAdaptiveBackgroundColor(for: normalBGColor)
+            } else if let baseBGColor = button.configuration?.baseBackgroundColor {
+                setAdaptiveBackgroundColor(for: baseBGColor)
+            } else {
+                setAdaptiveBackgroundColor(for: .systemBlue)
+            }
+            
+            if let fgColor = button._foregroundColors[button.state.rawValue] {
+                button.configuration?.attributedTitle = attributedTitle(withColor: fgColor)
+            } else if let normalFGColor = button._foregroundColors[UIControl.State.normal.rawValue] {
+                setAdaptiveForegroundColor(for: normalFGColor)
+            } else if let baseFGColor = button.configuration?.baseForegroundColor {
+                setAdaptiveForegroundColor(for: baseFGColor)
+            } else {
+                setAdaptiveForegroundColor(for: .white)
+            }
+            
+            updateIcon()
+            updateStroke()
+            
+            func updateIcon() {
+                let alpha = button.state == .disabled ? 0.3 : button.state == .highlighted ? 0.8 : 1.0
+                button.configuration?.image = button.configuration?.image?.withTintColor(.black.withAlphaComponent(alpha))
+            }
+            func updateStroke() {
+                /// because it has a stroleColor, even if it is not defined erlear
+                guard button._isStrokeColorAdded else { return }
+                let color = button.configuration?.background.strokeColor
+                guard color != .clear else { return }
+                let alpha = button.state == .disabled ? 0.3 : button.state == .highlighted ? 0.8 : 1.0
+                button.configuration?.background.strokeColor = color?.withAlphaComponent(alpha)
+            }
+            
+            func setAdaptiveBackgroundColor(for color: UIColor) {
+                guard color != .clear else { return }
+                let alpha = button.state == .disabled ? 0.5 : button.state == .highlighted ? 0.8 : 1.0
+                button.configuration?.background.backgroundColor = color.withAlphaComponent(alpha)
+            }
+            
+            func setAdaptiveForegroundColor(for color: UIColor) {
+                guard color != .clear else { return }
+                let alpha = button.state == .disabled ? 0.5 : button.state == .highlighted ? 0.8 : 1.0
+                button.configuration?.attributedTitle = attributedTitle(withColor: color.withAlphaComponent(alpha))
+            }
+            
+            func attributedTitle(withColor color: UIColor) -> AttributedString {
+                AttributedString(NSAttributedString(
+                    string: button.configuration?.title ?? "",
+                    attributes: [.foregroundColor: color]
+                ))
+            }
         }
     }
 }

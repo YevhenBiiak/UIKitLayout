@@ -9,6 +9,7 @@ import UIKit
 public protocol StorableView {}
 
 extension StorableView {
+    @discardableResult
     public func store(in ref: inout Self?) -> Self {
         ref = self
         return self

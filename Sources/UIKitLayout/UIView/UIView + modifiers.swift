@@ -153,7 +153,6 @@ extension UIView {
         return self
     }
     
-    @discardableResult
     public func padding(left: CGFloat = 0, right: CGFloat = 0, top: CGFloat = 0, bottom: CGFloat = 0) -> UIView {
         removeConstraints([.top, .leading, .trailing, .bottom], to: .superview)
         let view = UIView()
@@ -167,14 +166,12 @@ extension UIView {
         return view
     }
     
-    @discardableResult
     public func padding(_ level: CGFloat? = nil) -> UIView {
         var spacing: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 20 : 16
         if let level { spacing = level }
         return padding(left: spacing, right: spacing, top: spacing, bottom: spacing)
     }
     
-    @discardableResult
     @available(*, deprecated, renamed: "padding(_:_:)")
     public func padding(_ axis: NSLayoutConstraint.Axis, length: CGFloat) -> UIView {
         switch axis {
@@ -187,7 +184,6 @@ extension UIView {
         }
     }
     
-    @discardableResult
     public func padding(_ axis: NSLayoutConstraint.Axis, _ length: CGFloat) -> UIView {
         switch axis {
         case .horizontal:
@@ -199,17 +195,14 @@ extension UIView {
         }
     }
     
-    @discardableResult
     public func offset(x: CGFloat, y: CGFloat) -> UIView {
         return padding(left: x, right: -x, top: y, bottom: -y)
     }
     
-    @discardableResult
     public func offset(x: CGFloat) -> UIView {
         return offset(x: x, y: 0)
     }
     
-    @discardableResult
     public func offset(y: CGFloat) -> UIView {
         return offset(x: 0, y: y)
     }
