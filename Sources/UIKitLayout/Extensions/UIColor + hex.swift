@@ -37,12 +37,20 @@ extension UIColor {
             self.init(red: 1, green: 0, blue: 0, alpha: 1)
         }
     }
+    
     public var rgb: (red: CGFloat, green: CGFloat, blue: CGFloat) {(
         cgColor.components![0],
         cgColor.components![1],
         cgColor.components![2]
     )}
-    public var alpha: CGFloat { cgColor.components![3] }
+    
+    public var alpha: CGFloat {
+        if let components = cgColor.components, components.count == 4 {
+            return components[3]
+        } else {
+            return 1
+        }
+    }
     
     public var hex: String {
         cgColor.components![0..<(alpha < 1 ? 4 : 3)]
