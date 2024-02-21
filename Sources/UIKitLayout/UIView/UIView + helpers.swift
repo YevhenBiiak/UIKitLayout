@@ -338,8 +338,6 @@ extension UIView {
         // MARK: AdditionalSafeAreaInsets cases
         
         case .topBar:
-            layoutIfNeeded()
-            controller?.additionalSafeAreaInsets.top = bounds.height
             if hasWidth {
                 centerXAnchor == superview.centerXAnchor
             } else {
@@ -347,9 +345,9 @@ extension UIView {
                 trailingAnchor == superview.trailingAnchor
             }
             bottomAnchor == superview.safeAreaLayoutGuide.topAnchor
-        case .bottomBar:
             layoutIfNeeded()
-            controller?.additionalSafeAreaInsets.bottom = bounds.height
+            controller?.additionalSafeAreaInsets.top = bounds.height
+        case .bottomBar:
             if hasWidth {
                 centerXAnchor == superview.centerXAnchor
             } else {
@@ -357,6 +355,8 @@ extension UIView {
                 trailingAnchor == superview.trailingAnchor
             }
             topAnchor == superview.safeAreaLayoutGuide.bottomAnchor
+            layoutIfNeeded()
+            controller?.additionalSafeAreaInsets.bottom = bounds.height
         }
         
         // MARK: Set Width, Height percentage if any
