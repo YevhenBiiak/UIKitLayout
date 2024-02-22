@@ -236,57 +236,91 @@ extension UIView {
     @discardableResult
     public func onTapGesture(_ perform: @escaping () -> Void) -> Self {
         isUserInteractionEnabled = true
-        tapGestureActions.append(perform)
-        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapGestureRecieved)))
+        tapGestureAction = perform
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureRecieved))
+        addGestureRecognizer(tap)
         return self
     }
     
     @discardableResult
-    public func onLongPress(_ perform: @escaping () -> Void) -> Self {
+    public func onTapGesture(force: Bool, _ perform: @escaping () -> Void) -> Self {
         isUserInteractionEnabled = true
-        longPressActions.append(perform)
-        addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(lognPressRecieved)))
+        tapGestureAction = perform
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureRecieved))
+        tap.cancelsTouchesInView = !force
+        addGestureRecognizer(tap)
         return self
     }
     
     @discardableResult
     public func onTapGesture(_ perform: @escaping (_ view: UIView) -> Void) -> Self {
         isUserInteractionEnabled = true
-        tapGestureHandlers.append(perform)
-        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapGestureRecieved)))
+        tapGestureHandler = perform
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureRecieved))
+        addGestureRecognizer(tap)
         return self
     }
     
     @discardableResult
-    public func onLongPress(_ perform: @escaping (_ view: UIView) -> Void) -> Self {
+    public func onTapGesture(force: Bool, _ perform: @escaping (_ view: UIView) -> Void) -> Self {
         isUserInteractionEnabled = true
-        longPressHandlers.append(perform)
-        addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(lognPressRecieved)))
+        tapGestureHandler = perform
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureRecieved))
+        tap.cancelsTouchesInView = !force
+        addGestureRecognizer(tap)
         return self
     }
     
     @discardableResult
-    public func hideKeyboardOnTap(force: Bool = false) -> Self {
-        let tap: UITapGestureRecognizer = .init(target: self, action: #selector(dismissKeyboard))
-        tap.cancelsTouchesInView = !force
-        self.addGestureRecognizer(tap)
+    public func onLongPress(duration: TimeInterval? = nil, force: Bool = false, _ perform: @escaping () -> Void) -> Self {
+        isUserInteractionEnabled = true
+        longPressAction = perform
+        let press = UILongPressGestureRecognizer(target: self, action: #selector(lognPressRecieved))
+        if let duration {
+            press.minimumPressDuration = duration
+        }
+        press.cancelsTouchesInView = !force
+        addGestureRecognizer(press)
+        return self
+    }
+    
+    @discardableResult
+    public func onLongPress(duration: TimeInterval? = nil, force: Bool = false, _ perform: @escaping (_ view: UIView) -> Void) -> Self {
+        isUserInteractionEnabled = true
+        longPressHandler = perform
+        let press = UILongPressGestureRecognizer(target: self, action: #selector(lognPressRecieved))
+        if let duration {
+            press.minimumPressDuration = duration
+        }
+        press.cancelsTouchesInView = !force
+        addGestureRecognizer(press)
         return self
     }
     
     @objc internal func tapGestureRecieved() {
-        tapGestureActions.forEach { $0() }
-        tapGestureHandlers.forEach { $0(self) }
+        tapGestureAction?()
+        tapGestureHandler?(self)
     }
     
     @objc internal func lognPressRecieved(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began else { return }
-        longPressActions.forEach { $0() }
-        longPressHandlers.forEach { $0(self) }
+        longPressAction?()
+        longPressHandler?(self)
+    }
+    
+    @discardableResult
+    public func hideKeyboardOnTap(force: Bool = false) -> Self {
+        isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = !force
+        addGestureRecognizer(tap)
+        return self
     }
     
     @objc internal func dismissKeyboard() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            self.controller?.view.endEditing(true)
+            // UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
     }
     

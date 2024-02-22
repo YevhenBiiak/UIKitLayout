@@ -6,7 +6,6 @@
 
 import UIKit
 
-/*
 extension UIImage {
     
     public func resize(fitIn length: CGFloat) -> UIImage? {
@@ -31,4 +30,3 @@ extension UIImage {
         return UIGraphicsGetImageFromCurrentImageContext()
     }
 }
-*/

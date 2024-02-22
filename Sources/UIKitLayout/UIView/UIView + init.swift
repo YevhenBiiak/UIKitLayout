@@ -29,20 +29,20 @@ extension UIView {
         static var heightPercentage  = "_heightPercentage_"
     }
     
-    internal var longPressActions: [(() -> Void)] {
-        get { getAssociatedObject(key: &AssociatedKeys.longPressAction) ?? [] }
+    internal var longPressAction: (() -> Void)? {
+        get { getAssociatedObject(key: &AssociatedKeys.longPressAction) }
         set { setAssociatedObject(key: &AssociatedKeys.longPressAction, value: newValue) }
     }
-    internal var tapGestureActions: [(() -> Void)] {
-        get { getAssociatedObject(key: &AssociatedKeys.tapGestureAction) ?? [] }
+    internal var tapGestureAction: (() -> Void)? {
+        get { getAssociatedObject(key: &AssociatedKeys.tapGestureAction) }
         set { setAssociatedObject(key: &AssociatedKeys.tapGestureAction, value: newValue) }
     }
-    internal var longPressHandlers: [((UIView) -> Void)] {
-        get { getAssociatedObject(key: &AssociatedKeys.longPressHandler) ?? [] }
+    internal var longPressHandler: ((UIView) -> Void)? {
+        get { getAssociatedObject(key: &AssociatedKeys.longPressHandler) }
         set { setAssociatedObject(key: &AssociatedKeys.longPressHandler, value: newValue) }
     }
-    internal var tapGestureHandlers: [((UIView) -> Void)] {
-        get { getAssociatedObject(key: &AssociatedKeys.tapGestureHandler) ?? [] }
+    internal var tapGestureHandler: ((UIView) -> Void)? {
+        get { getAssociatedObject(key: &AssociatedKeys.tapGestureHandler) }
         set { setAssociatedObject(key: &AssociatedKeys.tapGestureHandler, value: newValue) }
     }
     
