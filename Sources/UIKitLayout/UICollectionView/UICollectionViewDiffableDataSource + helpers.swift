@@ -8,6 +8,10 @@ import UIKit
 
 extension UICollectionViewDiffableDataSource {
     
+    public var itemIdentifiers: [ItemIdentifierType] {
+        snapshot().itemIdentifiers
+    }
+    
     public func reload(items: [ItemIdentifierType]) where SectionIdentifierType == Int {
         var snapshot = NSDiffableDataSourceSnapshot<SectionIdentifierType, ItemIdentifierType>()
         snapshot.appendSections([0])

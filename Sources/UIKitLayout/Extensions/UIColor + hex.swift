@@ -12,7 +12,6 @@ extension UIColor {
         let r = CGFloat((hex & 0xFF0000) >> 16) / 0xFF
         let g = CGFloat((hex & 0x00FF00) >>  8) / 0xFF
         let b = CGFloat((hex & 0x0000FF) >>  0) / 0xFF
-        
         self.init(red: r, green: g, blue: b, alpha: 1)
     }
     
@@ -33,31 +32,32 @@ extension UIColor {
             self.init(hex: Int(hex, radix: 16)!)
         }
         else {
-            // return red color for wrong hex input
-            self.init(red: 1, green: 0, blue: 0, alpha: 1)
+            // return black color for wrong hex input
+            self.init(red: 0, green: 0, blue: 0, alpha: 1)
         }
     }
     
-    public var rgb: (red: CGFloat, green: CGFloat, blue: CGFloat) {(
-        cgColor.components![0],
-        cgColor.components![1],
-        cgColor.components![2]
-    )}
-    
     public var alpha: CGFloat {
-        if let components = cgColor.components, components.count == 4 {
-            return components[3]
-        } else {
-            return 1
-        }
+        ciColor.alpha
+    }
+    
+    public var rgb: (red: CGFloat, green: CGFloat, blue: CGFloat) {
+        (ciColor.red, ciColor.green, ciColor.blue)
+    }
+    
+    public var hsba: (h: CGFloat, s: CGFloat, b: CGFloat, a: CGFloat) {
+        var hsba: (h: CGFloat, s: CGFloat, b: CGFloat, a: CGFloat) = (0, 0, 0, 0)
+        self.getHue(&(hsba.h), saturation: &(hsba.s), brightness: &(hsba.b), alpha: &(hsba.a))
+        return hsba
     }
     
     public var hex: String {
-        cgColor.components![0..<(alpha < 1 ? 4 : 3)]
+        let components = [rgb.red, rgb.green, rgb.blue, alpha]
+        return components[0..<(alpha < 1 ? 4 : 3)]
             .map { String(format: "%02lX", Int($0 * 255)) }
             .reduce("#", +)
     }
-        
+    
     public var adaptiveTextColor: UIColor {
         isLightColor ? .black : .white
     }
