@@ -38,11 +38,11 @@ extension UIColor {
     }
     
     public var alpha: CGFloat {
-        ciColor.alpha
+        rgba.a
     }
     
     public var rgb: (red: CGFloat, green: CGFloat, blue: CGFloat) {
-        (ciColor.red, ciColor.green, ciColor.blue)
+        (rgba.r, rgba.g, rgba.b)
     }
     
     public var hsba: (h: CGFloat, s: CGFloat, b: CGFloat, a: CGFloat) {
@@ -52,7 +52,7 @@ extension UIColor {
     }
     
     public var hex: String {
-        let components = [rgb.red, rgb.green, rgb.blue, alpha]
+        let components = [rgba.r, rgba.g, rgba.b, rgba.a]
         return components[0..<(alpha < 1 ? 4 : 3)]
             .map { String(format: "%02lX", Int($0 * 255)) }
             .reduce("#", +)
@@ -69,6 +69,14 @@ extension UIColor {
         
         let lightness = [lightRed, lightGreen, lightBlue].reduce(0) { $1 ? $0 + 1 : $0 }
         return lightness >= 2
+    }
+}
+
+extension UIColor {
+    internal var rgba: (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+        var rgba: (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) = (0, 0, 0, 0)
+        getRed(&(rgba.r), green: &(rgba.g), blue: &(rgba.b), alpha: &(rgba.a))
+        return rgba
     }
 }
 
