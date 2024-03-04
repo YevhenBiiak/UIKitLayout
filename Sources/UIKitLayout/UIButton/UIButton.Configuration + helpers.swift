@@ -48,14 +48,17 @@ extension UIButton.Configuration {
             } else if let normalImage = button._iconImages[UIControl.State.normal.rawValue] {
                 setAdaptiveImage(for: normalImage)
             } else {
-                setAdaptiveImage()
+                if let image = button.configuration?.image {
+                    button._iconImages[UIControl.State.normal.rawValue] = image
+                    setAdaptiveImage(for: image)
+                }
             }
             
             updateStroke()
             
-            func setAdaptiveImage(for image: UIImage? = nil) {
+            func setAdaptiveImage(for image: UIImage) {
                 let alpha = button.state == .disabled ? 0.3 : button.state == .highlighted ? 0.8 : 1.0
-                button.configuration?.image = (image ?? button.configuration?.image)?.withAlphaComponent(alpha)
+                button.configuration?.image = image.withAlphaComponent(alpha)
             }
             
             func updateStroke() {
