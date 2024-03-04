@@ -93,7 +93,10 @@ extension UIButton {
     
     @discardableResult
     public func image(_ image: UIImage) -> Self {
-        self.image(image, for: .normal)
+        validateConfiguration()
+        configuration?.image = image
+        _iconImages[UIButton.State.normal.rawValue] = image
+        configurationUpdateHandler?(self)
         return self
     }
     
