@@ -10,8 +10,9 @@ import Combine
 extension UIButton {
     
     private struct UKLAssociatedKeys {
-        static var _backgroundColor  = "_backgroundColor_"
-        static var _foregroundColor  = "_foregroundColor_"
+        static var _backgroundColor     = "_backgroundColor_"
+        static var _foregroundColor     = "_foregroundColor_"
+        static var _iconImage           = "_iconImage_"
         static var _isStrokeColorAdded  = "_isStrokeColorAdded_"
     }
     
@@ -23,6 +24,11 @@ extension UIButton {
     internal var _foregroundColors: [UInt: UIColor] {
         get { getAssociatedObject(key: &UKLAssociatedKeys._foregroundColor) ?? [:] }
         set { setAssociatedObject(key: &UKLAssociatedKeys._foregroundColor, value: newValue) }
+    }
+    
+    internal var _iconImages: [UInt: UIImage] {
+        get { getAssociatedObject(key: &UKLAssociatedKeys._iconImage) ?? [:] }
+        set { setAssociatedObject(key: &UKLAssociatedKeys._iconImage, value: newValue) }
     }
     
     internal var _isStrokeColorAdded: Bool {
@@ -37,13 +43,13 @@ extension UIButton {
     
     public convenience init(image: UIImage) {
         self.init(configuration: .filled())
-        configuration?.image = image
+        self.image(image, for: .normal)
     }
     
     public convenience init(_ title: String, image: UIImage) {
         self.init(configuration: .filled())
+        self.image(image, for: .normal)
         configuration?.title = title
-        configuration?.image = image
     }
     
     public convenience init(_ publisher: Published<String>.Publisher) {
@@ -56,10 +62,10 @@ extension UIButton {
     
     public convenience init(_ publisher: Published<String>.Publisher, image: UIImage) {
         self.init(configuration: .filled())
+        self.image(image, for: .normal)
         publisher.sink { [weak self] title in
             self?.configuration?.title = title
         }
         .store(in: self)
-        configuration?.image = image
     }
 }

@@ -1,5 +1,5 @@
 //
-//  UIImage + resize.swift
+//  UIImage + resize, alpha.swift
 //
 //  Created by Yevhen Biiak on 14.12.2023.
 //
@@ -24,9 +24,16 @@ extension UIImage {
     }
     
     public func resize(to size: CGSize) -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(size, false, self.scale)
         defer { UIGraphicsEndImageContext() }
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
         draw(in: CGRect(origin: .zero, size: size))
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
+    
+    public func withAlphaComponent(_ alpha: CGFloat) -> UIImage? {
+        defer { UIGraphicsEndImageContext() }
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        draw(at: .zero, blendMode: .normal, alpha: alpha)
         return UIGraphicsGetImageFromCurrentImageContext()
     }
 }

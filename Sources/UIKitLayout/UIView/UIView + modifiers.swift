@@ -328,19 +328,23 @@ extension UIView {
     
     @discardableResult
     public func backgroundColor(_ color: UIColor) -> Self {
-        backgroundColor = color
+        if let button = self as? UIButton {
+            button.backgroundColor(color, for: .normal)
+        } else {
+            backgroundColor = color
+        }
         return self
     }
     
     @discardableResult
     public func backgroundColor(_ hex: Int) -> Self {
-        backgroundColor = UIColor(hex: hex)
+        backgroundColor(UIColor(hex: hex))
         return self
     }
     
     @discardableResult
     public func backgroundColor(_ hex: String) -> Self {
-        backgroundColor = UIColor(hex: hex)
+        backgroundColor(UIColor(hex: hex))
         return self
     }
     
@@ -446,11 +450,15 @@ extension UIView {
     
     @discardableResult
     public func border(_ color: UIColor, cornerRadius: CGFloat? = nil, width: CGFloat = 1) -> Self {
-        if let cornerRadius {
-            layer.cornerRadius = cornerRadius
+        if let button = self as? UIButton {
+            button.strokeStyle(color, cornerRadius: cornerRadius, width: width)
+        } else {
+            if let cornerRadius {
+                layer.cornerRadius = cornerRadius
+            }
+            layer.borderColor = color.cgColor
+            layer.borderWidth = width
         }
-        layer.borderColor = color.cgColor
-        layer.borderWidth = width
         return self
     }
     
