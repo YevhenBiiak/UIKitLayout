@@ -64,12 +64,12 @@ extension UIView {
     }
 }
 
-private extension UIStackView {
+extension UIStackView {
     
-    internal var canStretchHorizontally: Bool {
+    fileprivate var canStretchHorizontally: Bool {
         arrangedSubviews.contains { !$0.hasWidth }
     }
-    internal var canStretchVertically: Bool {
+    fileprivate var canStretchVertically: Bool {
         arrangedSubviews.contains { !$0.hasHeight }
     }
 }

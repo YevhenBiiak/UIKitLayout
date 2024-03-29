@@ -198,7 +198,7 @@ extension UIButton {
 
 extension UIButton {
     
-    private func validateConfiguration() {
+    internal func validateConfiguration() {
         if configuration == nil {
             configuration = .filled()
         }

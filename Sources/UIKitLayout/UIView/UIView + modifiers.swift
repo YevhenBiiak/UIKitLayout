@@ -368,7 +368,12 @@ extension UIView {
     
     @discardableResult
     public func cornerRadius(_ radius: CGFloat) -> Self {
-        layer.cornerRadius = radius
+        if let button = self as? UIButton {
+            button.validateConfiguration()
+            button.configuration?.background.cornerRadius = radius
+        } else {
+            layer.cornerRadius = radius
+        }
         return self
     }
     
