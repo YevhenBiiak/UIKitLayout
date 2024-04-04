@@ -156,13 +156,27 @@ extension UIButton {
     }
     
     @discardableResult
+    @available(*, deprecated, renamed: "contentHorizontalAlignment(_:)")
     public func contentAlignment(_ alignment: UIControl.ContentHorizontalAlignment) -> Self {
         contentHorizontalAlignment = alignment
         return self
     }
     
     @discardableResult
+    @available(*, deprecated, renamed: "contentVerticalAlignment(_:)")
     public func contentAlignment(_ alignment: UIControl.ContentVerticalAlignment) -> Self {
+        contentVerticalAlignment = alignment
+        return self
+    }
+    
+    @discardableResult
+    public func contentHorizontalAlignment(_ alignment: UIControl.ContentHorizontalAlignment) -> Self {
+        contentHorizontalAlignment = alignment
+        return self
+    }
+    
+    @discardableResult
+    public func contentVerticalAlignment(_ alignment: UIControl.ContentVerticalAlignment) -> Self {
         contentVerticalAlignment = alignment
         return self
     }
@@ -171,6 +185,45 @@ extension UIButton {
     public func contentInsets(_ insets: NSDirectionalEdgeInsets) -> Self {
         validateConfiguration()
         configuration?.contentInsets = insets
+        return self
+    }
+    
+    @discardableResult
+    public func contentInsets(_ inset: CGFloat) -> Self {
+        validateConfiguration()
+        configuration?.contentInsets = .init(top: inset, leading: inset, bottom: inset, trailing: inset)
+        return self
+    }
+    
+    @discardableResult
+    public func contentInsets(top: CGFloat? = nil, left: CGFloat? = nil, bottom: CGFloat? = nil, right: CGFloat? = nil) -> Self {
+        validateConfiguration()
+        if top == nil, left == nil, bottom == nil, right == nil {
+            let inset: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 20 : 16
+            configuration?.contentInsets = .init(top: inset, leading: inset, bottom: inset, trailing: inset)
+            return self
+        } else {
+            if let top { configuration?.contentInsets.top = top }
+            if let left { configuration?.contentInsets.leading = left }
+            if let bottom { configuration?.contentInsets.bottom = bottom }
+            if let right { configuration?.contentInsets.trailing = right }
+            return self
+        }
+    }
+    
+    @discardableResult
+    public func contentInsets(_ axis: NSLayoutConstraint.Axis, _ inset: CGFloat) -> UIView {
+        validateConfiguration()
+        switch axis {
+        case .horizontal:
+            configuration?.contentInsets.leading = inset
+            configuration?.contentInsets.trailing = inset
+        case .vertical:
+            configuration?.contentInsets.top = inset
+            configuration?.contentInsets.bottom = inset
+        @unknown default:
+            break
+        }
         return self
     }
     

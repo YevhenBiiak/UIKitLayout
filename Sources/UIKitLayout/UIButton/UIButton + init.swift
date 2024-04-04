@@ -37,25 +37,29 @@ extension UIButton {
     }
     
     public convenience init(_ title: String) {
-        self.init(configuration: .filled())
+        self.init()
+        self.validateConfiguration()
         configuration?.title = title
     }
     
     public convenience init(image: UIImage) {
-        self.init(configuration: .filled())
+        self.init()
+        self.validateConfiguration()
         self.configuration?.image = image
         _iconImages[UIButton.State.normal.rawValue] = image
     }
     
     public convenience init(_ title: String, image: UIImage) {
-        self.init(configuration: .filled())
+        self.init()
+        self.validateConfiguration()
         self.configuration?.title = title
         self.configuration?.image = image
         _iconImages[UIButton.State.normal.rawValue] = image
     }
     
     public convenience init(_ publisher: Published<String>.Publisher) {
-        self.init(configuration: .filled())
+        self.init()
+        self.validateConfiguration()
         publisher.sink { [weak self] title in
             self?.configuration?.title = title
         }
@@ -63,7 +67,8 @@ extension UIButton {
     }
     
     public convenience init(_ publisher: Published<String>.Publisher, image: UIImage) {
-        self.init(configuration: .filled())
+        self.init()
+        self.validateConfiguration()
         self.configuration?.image = image
         _iconImages[UIButton.State.normal.rawValue] = image
         publisher.sink { [weak self] title in

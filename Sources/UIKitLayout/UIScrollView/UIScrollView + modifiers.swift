@@ -15,12 +15,6 @@ extension UIScrollView {
     }
     
     @discardableResult
-    public func contentInsetAdjustmentBehavior(_ behavior: ContentInsetAdjustmentBehavior) -> Self {
-        contentInsetAdjustmentBehavior = behavior
-        return self
-    }
-    
-    @discardableResult
     public func contentInsets(_ edge: UIRectEdge, _ inset: CGFloat) -> Self {
         if edge.contains(.top) {
             contentInset.top = inset
@@ -37,6 +31,48 @@ extension UIScrollView {
         if edge.contains(.all) {
             contentInset = .init(top: inset, left: inset, bottom: inset, right: inset)
         }
+        return self
+    }
+    
+    @discardableResult
+    public func contentInsets(_ inset: CGFloat) -> Self {
+        contentInset = .init(top: inset, left: inset, bottom: inset, right: inset)
+        return self
+    }
+    
+    @discardableResult
+    public func contentInsets(top: CGFloat? = nil, left: CGFloat? = nil, bottom: CGFloat? = nil, right: CGFloat? = nil) -> Self {
+        if top == nil, left == nil, bottom == nil, right == nil {
+            let inset: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 20 : 16
+            contentInset = .init(top: inset, left: inset, bottom: inset, right: inset)
+            return self
+        } else {
+            if let top { contentInset.top = top }
+            if let left { contentInset.left = left }
+            if let bottom { contentInset.bottom = bottom }
+            if let right { contentInset.right = right }
+            return self
+        }
+    }
+    
+    @discardableResult
+    public func contentInsets(_ axis: NSLayoutConstraint.Axis, _ inset: CGFloat) -> UIView {
+        switch axis {
+        case .horizontal:
+            contentInset.left = inset
+            contentInset.right = inset
+        case .vertical:
+            contentInset.top = inset
+            contentInset.bottom = inset
+        @unknown default:
+            break
+        }
+        return self
+    }
+    
+    @discardableResult
+    public func contentInsetAdjustmentBehavior(_ behavior: ContentInsetAdjustmentBehavior) -> Self {
+        contentInsetAdjustmentBehavior = behavior
         return self
     }
     
