@@ -13,6 +13,8 @@ extension UIButton {
     public func title(_ title: String) -> Self {
         validateConfiguration()
         configuration?.title = title
+        // update if has attributed title
+        configurationUpdateHandler?(self)
         return self
     }
     
