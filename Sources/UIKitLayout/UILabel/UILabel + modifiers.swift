@@ -1,6 +1,5 @@
 //
-//  Label.swift
-//  Playground
+//  UILabel + modifiers.swift
 //
 //  Created by Yevhen Biiak on 13.08.2023.
 //

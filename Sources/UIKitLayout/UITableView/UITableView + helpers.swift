@@ -21,7 +21,7 @@ extension UITableView {
         return cell
     }
     
-    public func diffableDataSource<S: Hashable, I: Hashable>(cellProvider: @escaping (UITableView, IndexPath, I) -> UITableViewCell?) ->  UITableViewDiffableDataSource<S,I> {
+    public func diffableDataSource<S: Hashable, I: Hashable>(cellProvider: @escaping (_ table: UITableView, _ indexPath: IndexPath, _ item: I) -> UITableViewCell?) ->  UITableViewDiffableDataSource<S,I> {
         return UITableViewDiffableDataSource<S,I>(tableView: self, cellProvider: cellProvider)
     }
     

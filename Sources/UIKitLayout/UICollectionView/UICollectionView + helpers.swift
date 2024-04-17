@@ -21,7 +21,7 @@ extension UICollectionView {
         return cell
     }
     
-    public func diffableDataSource<S: Hashable, I: Hashable>(cellProvider: @escaping (UICollectionView, IndexPath, I) -> UICollectionViewCell?) -> UICollectionViewDiffableDataSource<S,I> {
+    public func diffableDataSource<S: Hashable, I: Hashable>(cellProvider: @escaping (_ collection: UICollectionView, _ indexPath: IndexPath, _ item: I) -> UICollectionViewCell?) -> UICollectionViewDiffableDataSource<S,I> {
         return UICollectionViewDiffableDataSource<S,I>(collectionView: self, cellProvider: cellProvider)
     }
     

@@ -1,6 +1,5 @@
 //
 //  UIImageView + modifiers.swift
-//  Playground
 //
 //  Created by Yevhen Biiak on 21.08.2023.
 //
