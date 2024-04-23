@@ -241,7 +241,10 @@ extension UIButton {
     public func strokeStyle(_ color: UIColor, cornerRadius: CGFloat? = nil, width: CGFloat = 1) -> Self {
         validateConfiguration()
         if let cornerRadius {
-            configuration?.background.cornerRadius = cornerRadius
+            if configuration?.background.cornerRadius != cornerRadius {
+                configuration?.background.cornerRadius = cornerRadius
+            }
+            layer.cornerRadius = cornerRadius
         }
         configuration?.background.strokeColor = color
         configuration?.background.strokeWidth = width

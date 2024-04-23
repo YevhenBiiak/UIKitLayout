@@ -27,6 +27,7 @@ extension UIView {
         static var tapGestureHandler = "_tapGestureHandlers_"
         static var widthPercentage   = "_widthPercentage_"
         static var heightPercentage  = "_heightPercentage_"
+        static var _shadowLayer = "_shadowLayer"
     }
     
     internal var longPressAction: (() -> Void)? {
@@ -53,5 +54,10 @@ extension UIView {
     internal var heightPercentage: PostfixPercentage? {
         get { getAssociatedObject(key: &AssociatedKeys.heightPercentage) }
         set { setAssociatedObject(key: &AssociatedKeys.heightPercentage, value: newValue) }
+    }
+
+    internal var _shadowLayer: CALayer? {
+        get { getAssociatedObject(key: &AssociatedKeys._shadowLayer) }
+        set { setAssociatedObject(key: &AssociatedKeys._shadowLayer, value: newValue) }
     }
 }

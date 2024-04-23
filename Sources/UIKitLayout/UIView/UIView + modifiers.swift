@@ -370,10 +370,11 @@ extension UIView {
     public func cornerRadius(_ radius: CGFloat) -> Self {
         if let button = self as? UIButton {
             button.validateConfiguration()
-            button.configuration?.background.cornerRadius = radius
-        } else {
-            layer.cornerRadius = radius
+            if button.configuration?.background.cornerRadius != radius {
+                button.configuration?.background.cornerRadius = radius
+            }
         }
+        layer.cornerRadius = radius
         return self
     }
     
@@ -415,6 +416,49 @@ extension UIView {
         layer.shadowRadius = radius
         layer.shadowOffset = .init(width: x, height: y)
         layer.shadowOpacity = opacity
+        return self
+    }
+    
+    @discardableResult
+    public func innerShadow(_ color: UIColor = .black, radius: CGFloat, x: CGFloat, y: CGFloat, opacity: Float = 0.2) -> Self {
+        
+        let block: (Any) -> Void = { [weak self] _ in
+            guard let self else { return }
+            let radius = radius < 0 ? 0 : radius
+            
+            _shadowLayer?.removeFromSuperlayer()
+            
+            var cornerRadius = CGFloat.zero
+            if let button = self as? UIButton, let radius = button.configuration?.background.cornerRadius {
+                cornerRadius = radius
+            } else {
+                cornerRadius = layer.cornerRadius
+            }
+            
+            let path = UIBezierPath.fixedRoundedRect(rect: bounds.insetBy(dx: -abs(x), dy: -abs(y)), cornerRadius: cornerRadius)
+            let cutout = UIBezierPath.fixedRoundedRect(rect: bounds, cornerRadius: cornerRadius).reversing()
+            path.append(cutout)
+            
+            let innerShadow = CALayer()
+            innerShadow.frame = bounds
+            innerShadow.shadowPath = path.cgPath
+            innerShadow.shadowColor = color.cgColor
+            innerShadow.shadowOffset = CGSize(
+                width:  x < 0 ? -(abs(x) - radius) : (abs(x) - radius),
+                height: y < 0 ? -(abs(y) - radius) : (abs(y) - radius)
+            )
+            innerShadow.shadowOpacity = opacity
+            innerShadow.shadowRadius = radius
+            innerShadow.cornerRadius = cornerRadius
+            innerShadow.masksToBounds = true
+            layer.addSublayer(innerShadow)
+            
+            _shadowLayer = innerShadow
+        }
+        
+        layer.onChange(\.bounds, block)
+        layer.onChange(\.cornerRadius, block)
+        
         return self
     }
     
