@@ -66,7 +66,7 @@ public class UICollectionViewGridLayout: UICollectionViewLayout {
         super.prepare()
         
         // Calculate layout attributes for all items in the collection view
-        guard let collectionView = collectionView else { return }
+        guard let collectionView, !collectionView.bounds.isEmpty else { return }
         
         itemsAttributes.removeAll()
         contentWidth  = .zero
