@@ -5,37 +5,34 @@
 //
 
 import UIKit
+import Combine
 
-final class VisualEffectView: UIVisualEffectView {
+public final class UKLVisualEffectView: UIVisualEffectView {
     
-    private let theEffect: UIVisualEffect
-    private let customIntensity: CGFloat
-    private var animator: UIViewPropertyAnimator?
+    private var cancellables: Set<AnyCancellable> = []
     
-    /// Create visual effect view with given effect and its intensity
-    ///
-    /// - Parameters:
-    ///   - effect: visual effect, eg UIBlurEffect(style: .dark)
-    ///   - intensity: custom intensity from 0.0 (no effect) to 1.0 (full effect) using linear scale
-    init(style: UIBlurEffect.Style, intensity: CGFloat) {
-        theEffect = UIBlurEffect(style: style)
-        customIntensity = intensity
-        super.init(effect: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) { nil }
-    
-    deinit {
-        animator?.stopAnimation(true)
-    }
-    
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-        effect = nil
-        animator?.stopAnimation(true)
-        animator = UIViewPropertyAnimator(duration: 0.3, curve: .linear) { [weak self] in
-            self?.effect = self?.theEffect
+    public init(radius: CGFloat) {
+        super.init(effect: UIBlurEffect(style: .systemThickMaterial))
+        
+        publisher(for: \.layer.sublayers).sink { [weak self] sublayers in
+            var filters: [Any] = []
+            
+            (sublayers ?? []).forEach { layer in
+                self?.removeNonGaissianFilters(from: layer)
+                filters += layer.filters ?? []
+            }
+            
+            for filter in filters {
+                (filter as? NSObject)?.setValue(radius, forKey: "inputRadius")
+            }
         }
-        animator?.fractionComplete = customIntensity
+        .store(in: &cancellables)
+    }
+    required init?(coder: NSCoder) { super.init(coder: coder) }
+    
+    private func removeNonGaissianFilters(from layer: CALayer) {
+        layer.filters?.removeAll { filter in
+            String(describing: filter) != "gaussianBlur"
+        }
     }
 }

@@ -44,6 +44,7 @@ extension UITableView {
         return self
     }
     
+    @available(iOS 15.0, *)
     @discardableResult
     public func allowsFocus(_ enabled: Bool) -> Self {
         allowsFocus = enabled

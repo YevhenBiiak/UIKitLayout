@@ -8,22 +8,6 @@ import UIKit
 
 extension UIView {
     
-    public var isPad: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad
-    }
-    
-    public var isPhone: Bool {
-        UIDevice.current.userInterfaceIdiom == .phone
-    }
-    
-    public var isRootView: Bool {
-        rootView === self
-    }
-    
-    public var rootView: UIView? {
-        controller?.view
-    }
-    
     public var controller: UIViewController? {
         for responder in sequence(first: self, next: { $0.next }) {
             if let viewController = responder as? UIViewController {
@@ -119,7 +103,7 @@ extension UIView {
     }
     
     private var hasAspectRatio: Bool {
-        if isRootView || isReusableCell {
+        if controller?.view === self || isReusableCell {
             true
         } else if !constraints(.aspectRatio).isEmpty {
             true
@@ -131,7 +115,7 @@ extension UIView {
     }
     
     internal var hasWidth: Bool {
-        if isRootView || isReusableCell {
+        if controller?.view === self || isReusableCell {
             true
         } else if hasAspectRatio && (hasWidthConstraint || hasHeightConstraint || hasWidthPercentage || hasHeightPercentage) {
             true
@@ -145,7 +129,7 @@ extension UIView {
     }
     
     internal var hasHeight: Bool {
-        if isRootView || isReusableCell {
+        if controller?.view === self || isReusableCell {
             true
         } else if hasAspectRatio && (hasWidthConstraint || hasHeightConstraint || hasWidthPercentage || hasHeightPercentage) {
             true
@@ -379,6 +363,19 @@ extension UIView {
                 heightAnchor == superview.heightAnchor * heightPercentage.value
             }
         }
+        
+        // if _constraintInsets.top != .zero {
+        //     constraints(.top, to: .superview).first?.constant = _constraintInsets.top
+        // }
+        // if _constraintInsets.left != .zero {
+        //     constraints(.leading, to: .superview).first?.constant = _constraintInsets.left
+        // }
+        // if _constraintInsets.right != .zero {
+        //     constraints(.trailing, to: .superview).first?.constant = -_constraintInsets.right
+        // }
+        // if _constraintInsets.bottom != .zero {
+        //     constraints(.bottom, to: .superview).first?.constant = -_constraintInsets.bottom
+        // }
         
         // MARK: Resolve InSaveArea Case
         

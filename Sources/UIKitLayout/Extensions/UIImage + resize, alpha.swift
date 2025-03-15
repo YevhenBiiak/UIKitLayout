@@ -20,7 +20,7 @@ extension UIImage {
     }
     
     public func resize(width: CGFloat, height: CGFloat) -> UIImage? {
-        resize(to: .init(width: width, height: height))
+        resize(to: CGSize(width: width, height: height))
     }
     
     public func resize(to size: CGSize) -> UIImage? {

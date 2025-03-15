@@ -9,28 +9,26 @@ import Combine
 
 extension UITextField {
     
-    private struct AssociatedKeys {
-        // public
-        static var validator = "_validator"
-        static var editingEventsActionAdded = "_editingEventsActionAdded"
-        static var validationUpdateHandler = "_validationUpdateHandler"
-        // private
+    private struct UKLAssociatedKeys {
+        static var _ukl_text_field_validator        = "_ukl_text_field_validator"
+        static var _ukl_editing_events_action_added = "_ukl_editing_events_action_added"
+        static var _ukl_validation_update_handler   = "_ukl_validation_update_handler"
     }
     
     internal var editingEventsActionAdded: Bool {
-        get { getAssociatedObject(key: &AssociatedKeys.editingEventsActionAdded) ?? false }
-        set { setAssociatedObject(key: &AssociatedKeys.editingEventsActionAdded, value: newValue) }
+        get { getAssociatedObject(key: &UKLAssociatedKeys._ukl_editing_events_action_added) ?? false }
+        set { setAssociatedObject(key: &UKLAssociatedKeys._ukl_editing_events_action_added, value: newValue) }
     }
     
     public internal(set) var validator: TextFieldValidator? {
-        get { getAssociatedObject(key: &AssociatedKeys.validator) }
-        set { setAssociatedObject(key: &AssociatedKeys.validator, value: newValue) }
+        get { getAssociatedObject(key: &UKLAssociatedKeys._ukl_text_field_validator) }
+        set { setAssociatedObject(key: &UKLAssociatedKeys._ukl_text_field_validator, value: newValue) }
     }
     
     /// called when one of editing event recieved
     public var validationUpdateHandler: ((_ validator: TextFieldValidator) -> Void)? {
-        get { getAssociatedObject(key: &AssociatedKeys.validationUpdateHandler) }
-        set { setAssociatedObject(key: &AssociatedKeys.validationUpdateHandler, value: newValue) }
+        get { getAssociatedObject(key: &UKLAssociatedKeys._ukl_validation_update_handler) }
+        set { setAssociatedObject(key: &UKLAssociatedKeys._ukl_validation_update_handler, value: newValue) }
     }
     
     public convenience init(text: String) {
@@ -49,6 +47,7 @@ extension UITextField {
         self.text = text
     }
     
+    @available(iOS 14.0, *)
     public convenience init(_ placeholder: String, text publisher: inout Published<String>.Publisher) {
         self.init(frame: .zero)
         self.placeholder = placeholder

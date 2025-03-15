@@ -31,6 +31,7 @@ extension UITextField {
         NotificationCenter.default.post(name: Notification.Name("UITextField.allEditingEvents"), object: self)
     }
     
+    @available(iOS 14.0, *)
     public func onEvent(_ event: UIControl.Event, _ action: @escaping (inout String?) -> Void) {
         addAction(UIAction { _ in action(&self.text) }, for: event)
     }

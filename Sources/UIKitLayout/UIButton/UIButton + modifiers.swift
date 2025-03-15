@@ -7,119 +7,66 @@
 
 import UIKit
 
+
 extension UIButton {
     
+    public enum UKLImagePlacement {
+        case leading, trailing
+    }
+    
     @discardableResult
-    public func title(_ title: String) -> Self {
-        validateConfiguration()
-        configuration?.title = title
-        // update if has attributed title
-        configurationUpdateHandler?(self)
+    public func backgroundColor(_ color: UIColor, for state: UIControl.State = .normal) -> Self {
+        setBackgroundColor(color, for: state)
         return self
     }
     
     @discardableResult
-    public func baseBackgroundColor(_ color: UIColor) -> Self {
-        validateConfiguration()
-        configuration?.baseBackgroundColor = color
+    public func title(_ title: String, for state: UIControl.State = .normal) -> Self {
+        setTitle(title, for: state)
         return self
     }
     
     @discardableResult
-    public func baseBackgroundColor(_ hex: Int) -> Self {
-        validateConfiguration()
-        configuration?.baseBackgroundColor = UIColor(hex: hex)
+    public func titleColor(_ color: UIColor, for state: UIControl.State = .normal) -> Self {
+        setTitleColor(color, for: state)
         return self
     }
     
     @discardableResult
-    public func baseBackgroundColor(_ hex: String) -> Self {
-        validateConfiguration()
-        configuration?.baseBackgroundColor = UIColor(hex: hex)
+    public func titleAlignment(_ alignment: NSTextAlignment) -> Self {
+        titleLabel?.textAlignment = alignment
         return self
     }
     
     @discardableResult
-    public func baseForegroundColor(_ color: UIColor) -> Self {
-        validateConfiguration()
-        configuration?.baseForegroundColor = color
+    public func titleLineBrakeMode(_ mode: NSLineBreakMode) -> Self {
+        self.titleLabel?.lineBrakeMode(mode)
         return self
     }
     
     @discardableResult
-    public func baseForegroundColor(_ hex: Int) -> Self {
-        validateConfiguration()
-        configuration?.baseForegroundColor = UIColor(hex: hex)
+    public func image(_ image: UIImage, for state: UIControl.State = .normal) -> Self {
+        setImage(image, for: state)
         return self
     }
     
     @discardableResult
-    public func baseForegroundColor(_ hex: String) -> Self {
-        validateConfiguration()
-        configuration?.baseForegroundColor = UIColor(hex: hex)
+    public func imagePlacement(_ placement: UKLImagePlacement) -> Self {
+        self._imagePlacement = placement
+        self.updateAppearance()
         return self
     }
     
     @discardableResult
-    public func backgroundColor(_ color: UIColor, for state: UIControl.State) -> Self {
-        validateConfiguration()
-        _backgroundColors[state.rawValue] = color
-        configurationUpdateHandler = configuration?.defaultUpdateHandler
-        configurationUpdateHandler?(self)
-        return self
-    }
-    
-    @discardableResult
-    public func foregroundColor(_ color: UIColor, for state: UIControl.State) -> Self {
-        validateConfiguration()
-        _foregroundColors[state.rawValue] = color
-        configurationUpdateHandler = configuration?.defaultUpdateHandler
-        configurationUpdateHandler?(self)
-        return self
-    }
-    
-    @discardableResult
-    public func image(_ image: UIImage, for state: UIControl.State) -> Self {
-        validateConfiguration()
-        _iconImages[state.rawValue] = image
-        configurationUpdateHandler = configuration?.defaultUpdateHandler
-        configurationUpdateHandler?(self)
-        return self
-    }
-    
-    @discardableResult
-    public func foregroundColor(_ color: UIColor) -> Self {
-        foregroundColor(color, for: .normal)
-        return self
-    }
-    
-    @discardableResult
-    public func image(_ image: UIImage) -> Self {
-        validateConfiguration()
-        configuration?.image = image
-        _iconImages[UIButton.State.normal.rawValue] = image
-        configurationUpdateHandler?(self)
-        return self
-    }
-    
-    @discardableResult
-    public func imagePlacement(_ placement: NSDirectionalRectEdge) -> Self {
-        validateConfiguration()
-        configuration?.imagePlacement = placement
-        return self
-    }
-    
-    @discardableResult
-    public func imagePadding(_ padding: CGFloat) -> Self {
-        validateConfiguration()
-        configuration?.imagePadding = padding
+    public func imageSpacing(_ spacing: CGFloat) -> Self {
+        self._imageSpacing = spacing
+        self.updateAppearance()
         return self
     }
     
     @discardableResult
     public func font(_ font: UIFont) -> Self {
-        validateConfiguration()
-        configuration?.font = font
+        titleLabel?.font = font
         return self
     }
     
@@ -130,135 +77,131 @@ extension UIButton {
     }
     
     @discardableResult
-    public func adjustFontSize(minScale: CGFloat) -> Self {
-        validateConfiguration()
-        findAll(UILabel.self).forEach { $0.adjustFontSize(minScale: minScale) }
+    public func adjustFontSize(minScale: CGFloat?) -> Self {
+        titleLabel?.adjustFontSize(minScale: minScale)
         return self
     }
     
     @discardableResult
-    public func titleAlignment(_ alignment: UIButton.Configuration.TitleAlignment) -> Self {
-        validateConfiguration()
-        configuration?.titleAlignment = alignment
-        return self
-    }
-    
-    @discardableResult
-    public func titleLineBrakeMode(_ mode: NSLineBreakMode) -> Self {
-        validateConfiguration()
-        configuration?.titleLineBreakMode = mode
-        return self
-    }
-    
-    @discardableResult
-    public func subtitleLineBrakeMode(_ mode: NSLineBreakMode) -> Self {
-        validateConfiguration()
-        configuration?.subtitleLineBreakMode = mode
-        return self
-    }
-    
-    @discardableResult
-    @available(*, deprecated, renamed: "contentHorizontalAlignment(_:)")
-    public func contentAlignment(_ alignment: UIControl.ContentHorizontalAlignment) -> Self {
+    public func contentAlignment(horizontal alignment: UIControl.ContentHorizontalAlignment) -> Self {
         contentHorizontalAlignment = alignment
+        self.updateAppearance()
         return self
     }
     
     @discardableResult
-    @available(*, deprecated, renamed: "contentVerticalAlignment(_:)")
-    public func contentAlignment(_ alignment: UIControl.ContentVerticalAlignment) -> Self {
+    public func contentAlignment(vertical alignment: UIControl.ContentVerticalAlignment) -> Self {
         contentVerticalAlignment = alignment
+        self.updateAppearance()
         return self
     }
     
     @discardableResult
-    public func contentHorizontalAlignment(_ alignment: UIControl.ContentHorizontalAlignment) -> Self {
-        contentHorizontalAlignment = alignment
-        return self
-    }
-    
-    @discardableResult
-    public func contentVerticalAlignment(_ alignment: UIControl.ContentVerticalAlignment) -> Self {
-        contentVerticalAlignment = alignment
-        return self
-    }
-    
-    @discardableResult
-    public func contentInsets(_ insets: NSDirectionalEdgeInsets) -> Self {
-        validateConfiguration()
-        configuration?.contentInsets = insets
+    public func contentInsets(_ insets: UIEdgeInsets) -> Self {
+        self._contentInsets = insets
+        self.updateAppearance()
         return self
     }
     
     @discardableResult
     public func contentInsets(_ inset: CGFloat) -> Self {
-        validateConfiguration()
-        configuration?.contentInsets = .init(top: inset, leading: inset, bottom: inset, trailing: inset)
+        self._contentInsets = .init(top: inset, left: inset, bottom: inset, right: inset)
+        self.updateAppearance()
         return self
     }
     
     @discardableResult
     public func contentInsets(top: CGFloat? = nil, left: CGFloat? = nil, bottom: CGFloat? = nil, right: CGFloat? = nil) -> Self {
-        validateConfiguration()
         if top == nil, left == nil, bottom == nil, right == nil {
-            let inset: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 20 : 16
-            configuration?.contentInsets = .init(top: inset, leading: inset, bottom: inset, trailing: inset)
-            return self
+            self._contentInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
         } else {
-            if let top { configuration?.contentInsets.top = top }
-            if let left { configuration?.contentInsets.leading = left }
-            if let bottom { configuration?.contentInsets.bottom = bottom }
-            if let right { configuration?.contentInsets.trailing = right }
-            return self
+            if let top    { self._contentInsets.top = top }
+            if let left   { self._contentInsets.left = left }
+            if let bottom { self._contentInsets.bottom = bottom }
+            if let right  { self._contentInsets.right = right }
         }
+        self.updateAppearance()
+        return self
     }
     
     @discardableResult
     public func contentInsets(_ axis: NSLayoutConstraint.Axis, _ inset: CGFloat) -> UIView {
-        validateConfiguration()
         switch axis {
         case .horizontal:
-            configuration?.contentInsets.leading = inset
-            configuration?.contentInsets.trailing = inset
+            self._contentInsets.left = inset
+            self._contentInsets.right = inset
         case .vertical:
-            configuration?.contentInsets.top = inset
-            configuration?.contentInsets.bottom = inset
+            self._contentInsets.top = inset
+            self._contentInsets.bottom = inset
         @unknown default:
             break
         }
-        return self
-    }
-    
-    @discardableResult
-    public func cornerStyle(_ style: UIButton.Configuration.CornerStyle) -> Self {
-        validateConfiguration()
-        configuration?.cornerStyle = style
-        return self
-    }
-    
-    @discardableResult
-    @available(*, deprecated, renamed: "border(_:cornerRadius:width:)")
-    public func strokeStyle(_ color: UIColor, cornerRadius: CGFloat? = nil, width: CGFloat = 1) -> Self {
-        validateConfiguration()
-        if let cornerRadius {
-            if configuration?.background.cornerRadius != cornerRadius {
-                configuration?.background.cornerRadius = cornerRadius
-            }
-            layer.cornerRadius = cornerRadius
-        }
-        configuration?.background.strokeColor = color
-        configuration?.background.strokeWidth = width
-        _isStrokeColorAdded = true
+        self.updateAppearance()
         return self
     }
 }
 
 
 extension UIButton {
-    
-    internal func validateConfiguration() {
-        if configuration == nil {
-            configuration = .filled()
+    private func updateAppearance() {
+        guard let imageViewSize = imageView?.bounds.size,
+              let titleLabelSize = titleLabel?.bounds.size
+        else { return }
+        
+        let titleWidth = titleLabel?.text == nil ? 0 : titleLabelSize.width
+        let placement = _imagePlacement
+        let insets = _contentInsets
+        let space = (imageView?.image == nil || titleLabel?.text == nil) ? 0 : _imageSpacing
+        
+        switch contentHorizontalAlignment {
+        case .left, .leading:
+            switch placement {
+            case .leading:
+                titleEdgeInsets = UIEdgeInsets(left: space, right: -space)
+                imageEdgeInsets = .zero
+                contentEdgeInsets = UIEdgeInsets(left: insets.left, right: insets.right + space)
+            case .trailing:
+                titleEdgeInsets = UIEdgeInsets(left: -(imageViewSize.width + space))
+                imageEdgeInsets = UIEdgeInsets(left: titleWidth, right: -titleWidth)
+                contentEdgeInsets = UIEdgeInsets(left: insets.left + space, right: insets.right)
+            }
+        case .right, .trailing:
+            switch placement {
+            case .leading:
+                titleEdgeInsets = UIEdgeInsets(left: space, right: -space)
+                imageEdgeInsets = .zero
+                contentEdgeInsets = UIEdgeInsets(left: insets.left, right: insets.right + space)
+            case .trailing:
+                titleEdgeInsets = UIEdgeInsets(left: -2 * (imageViewSize.width + space), right: imageViewSize.width + space)
+                imageEdgeInsets = UIEdgeInsets(left: titleWidth, right: -titleWidth)
+                contentEdgeInsets = UIEdgeInsets(left: insets.left + space, right: insets.right)
+            }
+        case .fill:
+            contentHorizontalAlignment = .center
+            fallthrough
+        default: // unknown or center, fill
+            switch _imagePlacement {
+            case .leading:
+                titleEdgeInsets = UIEdgeInsets(left: space, right: -space)
+                imageEdgeInsets = .zero
+                contentEdgeInsets = UIEdgeInsets(left: insets.left, right: insets.right + space)
+            case .trailing:
+                titleEdgeInsets = UIEdgeInsets(left: -2 * (imageViewSize.width + space))
+                imageEdgeInsets = UIEdgeInsets(left: titleWidth, right: -titleWidth)
+                contentEdgeInsets = UIEdgeInsets(left: insets.left + space, right: insets.right)
+            }
         }
+    }
+}
+
+extension UIEdgeInsets {
+    init(left: CGFloat = 0, top: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0) {
+        self.init(top: top, left: left, bottom: bottom, right: right)
+    }
+}
+
+extension CGSize {
+    var aspectRatio: CGFloat {
+        width / height
     }
 }

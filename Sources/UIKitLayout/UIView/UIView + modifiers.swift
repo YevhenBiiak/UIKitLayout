@@ -59,7 +59,7 @@ extension UIView {
     }
     
     @discardableResult
-    public func frame(width: PostfixPercentage) -> Self {
+    public func frame(width: UKLPostfixPercentage) -> Self {
         if let superview {
             removeConstraints(.width, to: .superview)
             translatesAutoresizingMaskIntoConstraints = false
@@ -72,7 +72,7 @@ extension UIView {
     }
     
     @discardableResult
-    public func frame(height: PostfixPercentage) -> Self {
+    public func frame(height: UKLPostfixPercentage) -> Self {
         if let superview {
             removeConstraints(.height, to: .superview)
             translatesAutoresizingMaskIntoConstraints = false
@@ -85,7 +85,7 @@ extension UIView {
     }
     
     @discardableResult
-    public func frame(width: PostfixPercentage, height: PostfixPercentage) -> Self {
+    public func frame(width: UKLPostfixPercentage, height: UKLPostfixPercentage) -> Self {
         if let superview {
             removeConstraints([.width, .height], to: .superview)
             translatesAutoresizingMaskIntoConstraints = false
@@ -100,7 +100,7 @@ extension UIView {
     }
     
     @discardableResult
-    public func frame(width: CGFloat, height: PostfixPercentage) -> Self {
+    public func frame(width: CGFloat, height: UKLPostfixPercentage) -> Self {
         removeConstraints(.width)
         translatesAutoresizingMaskIntoConstraints = false
         widthAnchor == width
@@ -115,7 +115,7 @@ extension UIView {
     }
     
     @discardableResult
-    public func frame(width: PostfixPercentage, height: CGFloat) -> Self {
+    public func frame(width: UKLPostfixPercentage, height: CGFloat) -> Self {
         removeConstraints(.height)
         translatesAutoresizingMaskIntoConstraints = false
         heightAnchor == height
@@ -126,30 +126,6 @@ extension UIView {
             widthPercentage = width
             /* will be setted later in alignInSuperview(_:) */
         }
-        return self
-    }
-    
-    @discardableResult
-    @available(*, deprecated, message: "Might cause unexpected results")
-    public func frame(minWidth: CGFloat? = nil, minHeight: CGFloat? = nil) -> Self {
-        if let minWidth {
-            removeConstraints(.width)
-            translatesAutoresizingMaskIntoConstraints = false
-            widthAnchor >= minWidth
-        }
-        if let minHeight {
-            removeConstraints(.height)
-            translatesAutoresizingMaskIntoConstraints = false
-            heightAnchor >= minHeight
-        }
-        return self
-    }
-    
-    @discardableResult
-    @available(*, deprecated, renamed: "frame(aspectRatio:)")
-    public func aspectRatio(_ aspectRatio: CGFloat) -> Self {
-        removeConstraints(.aspectRatio)
-        widthAnchor == heightAnchor * aspectRatio
         return self
     }
     
@@ -170,18 +146,6 @@ extension UIView {
         var spacing: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 20 : 16
         if let level { spacing = level }
         return padding(left: spacing, right: spacing, top: spacing, bottom: spacing)
-    }
-    
-    @available(*, deprecated, renamed: "padding(_:_:)")
-    public func padding(_ axis: NSLayoutConstraint.Axis, length: CGFloat) -> UIView {
-        switch axis {
-        case .horizontal:
-            return padding(left: length, right: length, top: 0, bottom: 0)
-        case .vertical:
-            return padding(left: 0, right: 0, top: length, bottom: length)
-        @unknown default:
-            return padding()
-        }
     }
     
     public func padding(_ axis: NSLayoutConstraint.Axis, _ length: CGFloat) -> UIView {
@@ -234,35 +198,14 @@ extension UIView {
     // MARK: Actions modifiers
     
     @discardableResult
-    public func onTapGesture(_ perform: @escaping () -> Void) -> Self {
+    public func onTapGesture(force: Bool = false, _ perform: @escaping () -> Void) -> Self {
         isUserInteractionEnabled = true
-        tapGestureAction = perform
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureRecieved))
-        addGestureRecognizer(tap)
+        onTapGesture(force: force, {_ in perform()})
         return self
     }
     
     @discardableResult
-    public func onTapGesture(force: Bool, _ perform: @escaping () -> Void) -> Self {
-        isUserInteractionEnabled = true
-        tapGestureAction = perform
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureRecieved))
-        tap.cancelsTouchesInView = !force
-        addGestureRecognizer(tap)
-        return self
-    }
-    
-    @discardableResult
-    public func onTapGesture(_ perform: @escaping (_ view: UIView) -> Void) -> Self {
-        isUserInteractionEnabled = true
-        tapGestureHandler = perform
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureRecieved))
-        addGestureRecognizer(tap)
-        return self
-    }
-    
-    @discardableResult
-    public func onTapGesture(force: Bool, _ perform: @escaping (_ view: UIView) -> Void) -> Self {
+    public func onTapGesture(force: Bool = false, _ perform: @escaping (_ gesture: UITapGestureRecognizer) -> Void) -> Self {
         isUserInteractionEnabled = true
         tapGestureHandler = perform
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureRecieved))
@@ -273,19 +216,14 @@ extension UIView {
     
     @discardableResult
     public func onLongPress(duration: TimeInterval? = nil, force: Bool = false, _ perform: @escaping () -> Void) -> Self {
-        isUserInteractionEnabled = true
-        longPressAction = perform
-        let press = UILongPressGestureRecognizer(target: self, action: #selector(lognPressRecieved))
-        if let duration {
-            press.minimumPressDuration = duration
-        }
-        press.cancelsTouchesInView = !force
-        addGestureRecognizer(press)
+        onLongPress(duration: duration, force: force, {
+            if $0.state == .began { perform() }
+        })
         return self
     }
     
     @discardableResult
-    public func onLongPress(duration: TimeInterval? = nil, force: Bool = false, _ perform: @escaping (_ view: UIView) -> Void) -> Self {
+    public func onLongPress(duration: TimeInterval? = nil, force: Bool = false, _ perform: @escaping (_ gesture: UILongPressGestureRecognizer) -> Void) -> Self {
         isUserInteractionEnabled = true
         longPressHandler = perform
         let press = UILongPressGestureRecognizer(target: self, action: #selector(lognPressRecieved))
@@ -297,15 +235,12 @@ extension UIView {
         return self
     }
     
-    @objc internal func tapGestureRecieved() {
-        tapGestureAction?()
-        tapGestureHandler?(self)
+    @objc internal func tapGestureRecieved(_ gesture: UITapGestureRecognizer) {
+        tapGestureHandler?(gesture)
     }
     
     @objc internal func lognPressRecieved(_ gesture: UILongPressGestureRecognizer) {
-        guard gesture.state == .began else { return }
-        longPressAction?()
-        longPressHandler?(self)
+        longPressHandler?(gesture)
     }
     
     @discardableResult
@@ -368,12 +303,6 @@ extension UIView {
     
     @discardableResult
     public func cornerRadius(_ radius: CGFloat) -> Self {
-        if let button = self as? UIButton {
-            button.validateConfiguration()
-            if button.configuration?.background.cornerRadius != radius {
-                button.configuration?.background.cornerRadius = radius
-            }
-        }
         layer.cornerRadius = radius
         return self
     }
@@ -403,15 +332,24 @@ extension UIView {
     }
     
     @discardableResult
-    public func blur(_ style: UIBlurEffect.Style = .systemMaterial, intensity: CGFloat = 1.0) -> Self {
-        let blurredView = VisualEffectView(style: style, intensity: intensity)
+    public func blur(radius: CGFloat, color: UIColor? = nil) -> Self {
+        let blurredView = UKLVisualEffectView(radius: radius)
+        blurredView.backgroundColor = color
         insertSubview(blurredView, at: 0, tamic: false)
         blurredView.edgeAnchors == edgeAnchors
         return self
     }
     
     @discardableResult
-    public func shadow(color: UIColor = .black, radius: CGFloat = 5, x: CGFloat = 0, y: CGFloat = 6, opacity: Float = 0.5) -> Self {
+    public func blur(style: UIBlurEffect.Style) -> Self {
+        let blurredView = UIVisualEffectView(effect: UIBlurEffect(style: style))
+        insertSubview(blurredView, at: 0, tamic: false)
+        blurredView.edgeAnchors == edgeAnchors
+        return self
+    }
+    
+    @discardableResult
+    public func shadow(_ color: UIColor = .black, radius: CGFloat = 5, x: CGFloat = 0, y: CGFloat = 6, opacity: Float = 0.5) -> Self {
         layer.shadowColor = color.cgColor
         layer.shadowRadius = radius
         layer.shadowOffset = .init(width: x, height: y)
@@ -428,12 +366,7 @@ extension UIView {
             
             _shadowLayer?.removeFromSuperlayer()
             
-            var cornerRadius = CGFloat.zero
-            if let button = self as? UIButton, let radius = button.configuration?.background.cornerRadius {
-                cornerRadius = radius
-            } else {
-                cornerRadius = layer.cornerRadius
-            }
+            let cornerRadius = layer.cornerRadius
             
             let path = UIBezierPath.fixedRoundedRect(rect: bounds.insetBy(dx: -abs(x), dy: -abs(y)), cornerRadius: cornerRadius)
             let cutout = UIBezierPath.fixedRoundedRect(rect: bounds, cornerRadius: cornerRadius).reversing()
@@ -463,7 +396,7 @@ extension UIView {
     }
     
     @discardableResult
-    public func border(_ edge: UIRectEdge, color: UIColor, width: CGFloat = 1) -> Self {
+    public func border(_ color: UIColor, edge: UIRectEdge, width: CGFloat = 1) -> Self {
         let border = UIView()
         border.backgroundColor = color
         addSubview(border, tamic: false)
@@ -499,15 +432,11 @@ extension UIView {
     
     @discardableResult
     public func border(_ color: UIColor, cornerRadius: CGFloat? = nil, width: CGFloat = 1) -> Self {
-        if let button = self as? UIButton {
-            button.strokeStyle(color, cornerRadius: cornerRadius, width: width)
-        } else {
-            if let cornerRadius {
-                layer.cornerRadius = cornerRadius
-            }
-            layer.borderColor = color.cgColor
-            layer.borderWidth = width
+        if let cornerRadius {
+            layer.cornerRadius = cornerRadius
         }
+        layer.borderColor = color.cgColor
+        layer.borderWidth = width
         return self
     }
     
@@ -535,4 +464,46 @@ extension UIView {
         }
         return self
     }
+    
+    // @discardableResult
+    // public func constraintInsets(_ insets: UIEdgeInsets) -> Self {
+    //     _constraintInsets = insets
+    //     return self
+    // }
+    // 
+    // @discardableResult
+    // public func constraintInsets(_ inset: CGFloat) -> Self {
+    //     _constraintInsets = .init(top: inset, left: inset, bottom: inset, right: inset)
+    //     return self
+    // }
+    // 
+    // @discardableResult
+    // public func constraintInsets(top: CGFloat? = nil, left: CGFloat? = nil, bottom: CGFloat? = nil, right: CGFloat? = nil) -> Self {
+    //     if top == nil, left == nil, bottom == nil, right == nil {
+    //         let inset: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 20 : 16
+    //         _constraintInsets = .init(top: inset, left: inset, bottom: inset, right: inset)
+    //         return self
+    //     } else {
+    //         if let top { _constraintInsets.top = top }
+    //         if let left { _constraintInsets.left = left }
+    //         if let bottom { _constraintInsets.bottom = bottom }
+    //         if let right { _constraintInsets.right = right }
+    //         return self
+    //     }
+    // }
+    // 
+    // @discardableResult
+    // public func constraintInsets(_ axis: NSLayoutConstraint.Axis, _ inset: CGFloat) -> UIView {
+    //     switch axis {
+    //     case .horizontal:
+    //         _constraintInsets.left = inset
+    //         _constraintInsets.right = inset
+    //     case .vertical:
+    //         _constraintInsets.top = inset
+    //         _constraintInsets.bottom = inset
+    //     @unknown default:
+    //         break
+    //     }
+    //     return self
+    // }
 }

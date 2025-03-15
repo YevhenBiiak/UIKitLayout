@@ -9,6 +9,7 @@ import Combine
 
 extension UITextField {
     
+    @available(iOS 14.0, *)
     @discardableResult
     public func assignText(to publisher: inout Published<String>.Publisher) -> Self {
         self.editingEventsPublisher.assign(to: &publisher)

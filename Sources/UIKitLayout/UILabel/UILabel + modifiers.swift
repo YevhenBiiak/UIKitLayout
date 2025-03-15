@@ -45,9 +45,9 @@ extension UILabel {
     }
     
     @discardableResult
-    public func adjustFontSize(minScale: CGFloat) -> Self {
-        adjustsFontSizeToFitWidth = true
-        minimumScaleFactor = minScale
+    public func adjustFontSize(minScale: CGFloat?) -> Self {
+        minimumScaleFactor = minScale ?? 0
+        adjustsFontSizeToFitWidth = minScale != nil
         return self
     }
     

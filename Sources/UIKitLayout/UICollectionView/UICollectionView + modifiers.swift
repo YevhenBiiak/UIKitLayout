@@ -27,6 +27,7 @@ extension UICollectionView {
         return self
     }
     
+    @available(iOS 15.0, *)
     @discardableResult
     public func allowsFocus(_ enable: Bool) -> Self {
         allowsFocus = enable
